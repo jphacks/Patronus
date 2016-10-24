@@ -4,6 +4,7 @@
   "description": "jphacks2016 名古屋8チームのプロダクト",
   "main": "index.js",
   "scripts": {
+    "start": "./node_modules/.bin/electron index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
