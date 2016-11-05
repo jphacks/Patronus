@@ -24,6 +24,29 @@ let connector = null;
 app.on('ready', (err) => {
     const menu = defaultMenu(app, shell);
 
+    menu.splice(1, 0, {
+        label: 'File',
+        submenu: [
+            {
+                label: 'Open Video Window',
+                click: (item, focusedWindow) => {
+                    if(!role.role && !mainWindow) {
+                        mainWindow = window_builder.createMainWindow(role, windowCloser);
+                    }
+                }
+            },
+            {
+                label: 'New Share Window',
+                click: (item, focusedWindow) => {
+                    if(!role.role) {
+                        // TODO
+                    }
+                }
+            },
+
+        ]
+    });
+
     Menu.setApplicationMenu(Menu.buildFromTemplate(menu));
 
     mainWindow = window_builder.createMainWindow(windowCloser);
@@ -55,6 +78,10 @@ app.on('activate', function() {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
+/* mainWindowが閉じたときのコールバック */
 function windowCloser() {
     mainWindow = null;
+    if(!role.role) {
+        mainWindow = window_builder.createVideoWindow(role, windowCloser);
+    }
 }
