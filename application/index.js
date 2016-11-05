@@ -45,6 +45,8 @@ app.on('ready', (err) => {
     createWindow();
 
     pairing(mainWindow, role);
+
+    shareWindow.windowSocket();
     shareWindow.createParentWindow("http://www.yahoo.co.jp/");
 });
 

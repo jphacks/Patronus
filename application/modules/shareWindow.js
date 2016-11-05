@@ -1,7 +1,8 @@
 const BrowserWindow = require('electron').BrowserWindow;
 const client = require('socket.io-client');
-const socket = client.connect('http://localhost:50000');
+const socket = client.connect('http://localhost:58100');
 
+let childWindows = [];
 
 const hona = function(){
 
@@ -18,11 +19,9 @@ socket.on('connect', function(){
         // childWindows[0].setPosition(pos[0], pos[1], true);
     })
     socket.on('closeWindow', function(){
-        console.log("yo")
         childWindows.forEach(function(childWindow){
             childWindow.close();
         });
-        // childWindows[0].setPosition(pos[0], pos[1], true);
     })
     socket.on('move', function(pos){
         childWindows[0].setPosition(pos[0], pos[1], true);
@@ -42,9 +41,8 @@ socket.on('connect', function(){
     // process.exit(0);
 });
 
-}
 
-const createParentWindow = function createParentWindow(url){
+function createParentWindow(url){
     let parentWindow;
     parentWindow = new BrowserWindow({
         // parent: mainWindow,
@@ -99,7 +97,7 @@ const createParentWindow = function createParentWindow(url){
     // });
 }
 
-const createChildWindow = function createChildWindow(opt){
+function createChildWindow(opt){
     console.log(opt)
     let childWindow;
     childWindow = new BrowserWindow({
@@ -119,8 +117,15 @@ const createChildWindow = function createChildWindow(opt){
 }
 
 
-module.exports = {
-    hona: hona,
+
+return{
+    // windowSocket: windowSocket,
     createParentWindow: createParentWindow,
     createChildWindow: createChildWindow
 }
+
+
+}();
+
+
+module.exports = hona;
