@@ -21,6 +21,7 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "electron": "^1.4.4"
+    "electron": "^1.4.4",
+    "socket.io-client": "^1.5.1"
   }
 }
