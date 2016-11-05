@@ -20,11 +20,13 @@ class PatronusManager{
 			console.log(id);
 			//startVideo();
 			self.setOnWindowCloseEvent();
+			self.onPeerOpened(id);
 		});
 		//	startVideo();
 
 		this.peer.on('close',function(){
 			self.peer.destroy();
+			self.onPeerClosed();
 		});
 
 
@@ -37,6 +39,7 @@ class PatronusManager{
 			console.log(conn);
 			self.dataConnectionMap.set(conn.peer,conn);
 			self.initDataConnectionEvents(conn);
+			self.onPeerConnected(conn);
 			//requestConnectionForData(conn);
 		});
 
@@ -52,6 +55,7 @@ class PatronusManager{
 			self.streamConnectionMap.set(call.peer,call);
 			self.initStreamConnectionEvents(call);
 			call.answer(self.localStream);
+			self.onPeerCalled(call);
 		});	
 	}
 
@@ -103,7 +107,7 @@ class PatronusManager{
 			console.log(stream);
 			//TODO リモートの設定
 			//this.startRemoteVideo(stream);
-			self.onStreamAdded();
+			self.onStreamAdded(stream);
 		});
 		call.on('close',()=>{
 			console.log('close stream connection');
@@ -241,6 +245,21 @@ class PatronusManager{
 	/**
 	 *  need override
 	 */
+	 onPeerOpened(id){
+
+	 }
+
+	 onPeerClosed(){
+
+	 }
+
+	 onPeerConnected(conn){
+
+	 }
+
+	 onPeerCalled(call){
+
+	 }
 
 	onDataConnectionOpened(conn){
 
