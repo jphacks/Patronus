@@ -4,12 +4,16 @@ const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 
-const pairing = require('./modules/pairing.js');
-const shareWindow = require('./modules/shareWindow.js');
+
+const Connector = require('./modules/connector.js');
+let parentWindows;
+let childWindows;
+const shareWindow = require('./modules/shareWindow.js')(parentWindows, childWindows);
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+
 
 let role = {role: null};
 
@@ -37,6 +41,7 @@ function createWindow() {
         mainWindow = null;
     });
 }
+let connector = null;
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -44,7 +49,9 @@ function createWindow() {
 app.on('ready', (err) => {
     createWindow();
 
-    pairing(mainWindow, role);
+    // pairing(mainWindow, role);
+    connector = new Connector(mainWindow, parentWindows, childWindows, role);
+    shareWindow.createParentWindow(`file://${__dirname}/public/test.html`, 10, connector.socket);
 });
 
 // Quit when all windows are closed.
