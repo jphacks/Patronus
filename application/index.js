@@ -10,6 +10,8 @@ const pairing = require('./modules/pairing.js');
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
+let role = {role: null};
+
 function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
@@ -41,7 +43,7 @@ function createWindow() {
 app.on('ready', (err) => {
     createWindow();
 
-    pairing(mainWindow);
+    pairing(mainWindow, role);
 });
 
 // Quit when all windows are closed.
