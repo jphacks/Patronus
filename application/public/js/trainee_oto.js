@@ -70,6 +70,10 @@ window.onload = function(){
 		//clickevent表記？
 	}
 
+	patronusManager.prototype.onStreamAdded = function(stream){
+		this.startRemoteVideo(stream);
+	}
+
 
 	patronusManager = new PatronusManager(SKYWAY_API_KEY);
 	patronusManager.setRemoteVideoElement(guiderVideoElement);
