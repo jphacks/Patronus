@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<script src="./js/setting.js"></script>
+	<script src="https://skyway.io/dist/0.3/peer.js"></script>
+</head>
+<body>
+	<video id="chat_video" autoplay style="width: 240px; height: 180px; border: 1px solid black;"></video>
+	<video id="chat_video2" autoplay style="width: 240px; height: 180px; border: 1px solid black;"></video>
+
+	<input id="id_input" type="text">
+	<button id="connect_button">connect</button>
+	<button id="send_button">send</button>
+	<!-- <script src="./js/chat.js"></script> -->
+	<script src="./js/PatronusManager.js"></script>
+	<script>
+		var patronus = new PatronusManager(SKYWAY_API_KEY);
+		patronus.setLocalVideoElement(document.getElementById('chat_video'));
+		patronus.setRemoteVideoElement(document.getElementById('chat_video2'));
+		
+	patronus.startLocalVideo();
+		//debug
+var id_input = document.getElementById("id_input");
+var connect_button = document.getElementById("connect_button");
+var send_button = document.getElementById("send_button");
+connect_button.addEventListener('click', function(e){
+	//connectingArray.push(id_input.value);
+	console.log('click');
+	//patronus.requestConnectionForData(id_input.value);
+	//console.log(local_stream);
+	patronus.requestConnectionForStream(id_input.value);
+});
+send_button.addEventListener('click',function(e){
+	patronus.broadcastData2AllConnection({a:"aaa",b:"bbb"});
+});
+	</script>
+</body>
+</html>
