@@ -36,7 +36,7 @@ class PatronusGuiderManager extends PatronusManager{
 
 
 window.onload = function(e){
-	patronusManager = new patronusGuiderManager(SKYWAY_API_KEY);
+	patronusManager = new PatronusGuiderManager(SKYWAY_API_KEY);
 
 }
 
