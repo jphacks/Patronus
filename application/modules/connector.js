@@ -4,12 +4,13 @@ const ipcMain = require('electron').ipcMain;
 const io = require('socket.io-client');
 
 module.exports = class Connector {
-    constructor(mainWindow, parentWindows, childWindows, role) {
+    constructor(mainWindow, parentWindows, childWindows, role, shareWindow) {
         this.socket = null;
         this.mainWindow = mainWindow;
         this.parentWindows = parentWindows;
         this.childWindows = childWindows;
         this.role = role;
+        this.shareWindow = shareWindow;
         this.connect();
         this.setListener();
     }
@@ -66,23 +67,25 @@ module.exports = class Connector {
                 console.error('error', data.body);
             });
 
+
             ipcMain.on('openURL', (e, data) => {
-                this.parentWindows.loadURL(data.url);
+                this.parentWindows[data.id].loadURL(data.url);
             });
             socket.on('createWindow', (opt) => {
-                // if(this.role.role != 'guider'){ createChildWindow(opt); }
+                if(this.role.role != 'guider'){ this.shareWindow.createChildWindow(opt); }
             });
             socket.on('closeWindow', (data) => {
-                if(this.childWindows != null){ childWindow.close(); }
+                if(this.childWindows[data.id] != null){ this.childWindows[data.id].close(); }
             });
             socket.on('move', (data) => {
-                this.childWindows.setPosition(data.pos[0], data.pos[1], true);
+                console.log(this.childWindows[data.id])
+                this.childWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
             });
             socket.on('resize', (data) => {
-                this.childWindows.setSize(data.size[0], data.size[1], true);
+                this.childWindows[data.id].setSize(data.size[0], data.size[1], true);
             });
             socket.on('updated', (data) => {
-                this.childWindows.loadURL(data.url);
+                this.childWindows[data.id].loadURL(data.url);
             });
         });
     }

@@ -6,8 +6,8 @@ const BrowserWindow = electron.BrowserWindow;
 
 
 const Connector = require('./modules/connector.js');
-let parentWindows;
-let childWindows;
+let parentWindows = {};
+let childWindows = {};
 const shareWindow = require('./modules/shareWindow.js')(parentWindows, childWindows);
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -50,8 +50,7 @@ app.on('ready', (err) => {
     createWindow();
 
     // pairing(mainWindow, role);
-    connector = new Connector(mainWindow, parentWindows, childWindows, role);
-    shareWindow.createParentWindow(`file://${__dirname}/public/test.html`, 10, connector.socket);
+    connector = new Connector(mainWindow, parentWindows, childWindows, role, shareWindow);
 });
 
 // Quit when all windows are closed.

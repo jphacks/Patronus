@@ -2,12 +2,11 @@ const ipcMain = require('electron').ipcMain;
 const BrowserWindow = require('electron').BrowserWindow;
 
 
-const ShareWindow = function(parentWindow, childWindow){
+const ShareWindow = function(parentWindows, childWindows){
 
     function createParentWindow(url, id, socket){
-        parentWindow = new BrowserWindow({
+        let parentWindow = new BrowserWindow({
             // parent: mainWindow,
-            id: id,
             x: 0,
             y: 0,
             width: 800,
@@ -24,33 +23,41 @@ const ShareWindow = function(parentWindow, childWindow){
             parentWindow = null;
         });
         parentWindow.on('move', () => {
-            socket.emit('move', {id: id, pos:parentWindow.getPosition()});
+            socket.emit('move', {id: id, pos: parentWindow.getPosition()});
         });
         parentWindow.on('resize', () => {
-            socket.emit('resize', {id: id, size:parentWindow.getSize()});
+            socket.emit('resize', {id: id, size: parentWindow.getSize()});
         });
         parentWindow.on('page-title-updated', (e, title) => {
             const url = parentWindow.webContents.getURL();
             console.log(url)
-            socket.emit('updated', {id: id, url:url});
+            socket.emit('updated', {id: id, url: url});
         })
+
+        // setTimeout(() => {
+        //     parentWindow.webContents.send('set-id', id);
+        // },2000);
+        ipcMain.on('get-id', (event, arg) => {
+          event.sender.send('set-id', id)
+        });
+        parentWindow.webContents.openDevTools();
+
         const opt = {
             id: id,
             x: parentWindow.getPosition()[0],
             y: parentWindow.getPosition()[1],
             width: parentWindow.getSize()[0],
             height: parentWindow.getSize()[1],
-            url: "https://www.github.com/"
+            url: url
         }
-        // socket.emit('createWindow', opt);
+        socket.emit('createWindow', opt);
 
-        // parentWindows.id = parentWindow;
+        parentWindows[id] = parentWindow;
     }
 
     function createChildWindow(opt, socket){
         // console.log(opt);
-        childWindow = new BrowserWindow({
-            id: opt.id,
+        let childWindow = new BrowserWindow({
             x: opt.x,
             y: opt.y,
             width: opt.width,
@@ -63,8 +70,8 @@ const ShareWindow = function(parentWindow, childWindow){
         childWindow.on('closed', () => {
             childWindow = null;
         });
-
-        // childWindows[opt.id] = childWindow;
+        childWindow.id = opt.id;
+        childWindows[opt.id] = childWindow;
     }
 
     return{

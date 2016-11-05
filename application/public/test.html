@@ -41,15 +41,21 @@ body{
 
 
 <div id="menu-bar">
+	<input type="hidden" id="win-id"></input>
 	<input type="text" id="url" value="http://electron.atom.io/"></input>
 	<button onclick="load();">Load</button>
 </div>
 
 <script type="text/javascript">
-const {ipcRenderer} = require('electron')
+const {ipcRenderer} = require('electron');
+ipcRenderer.send('get-id', {});
+ipcRenderer.on('set-id', (event, id) => {
+	// console.log(id);
+	document.getElementById("win-id").value = id;
+})
 function load(){
 	let url = document.getElementById("url").value;
-	ipcRenderer.send('openURL', url);
+	ipcRenderer.send('openURL', {id: document.getElementById("win-id").value, url: url});
 }
 
 
