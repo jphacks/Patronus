@@ -2,6 +2,9 @@
 
 const ipcMain = require('electron').ipcMain;
 const io = require('socket.io-client');
+const screencapture = require('screencapture');
+const fs = require('fs');
+const Datauri = require('datauri');
 
 module.exports = class Connector {
     constructor(mainWindow, role) {
@@ -63,6 +66,65 @@ module.exports = class Connector {
             socket.on('error_message', (data) => {
                 console.error('error', data.body);
             });
+
+            /**
+             * video window edit by kyoshida
+             */
+            
+            /**
+             * [screenshotを取って返却する]
+             * @param  {[type]} 'get_screenshot' [description]
+             * @param  {[type]} {empty}            [description]
+             * @return {[type]}                  [description]
+             */
+            ipcMain.on('get_screenshot',(event,data)=>{
+                screencapture(function(err,imagePath){
+                    if(err){
+                        console.log(err);
+                    }else{
+                        //console.log(imagePath);
+                        const datauri = new Datauri();
+                        dataurl.on('encoded',(content)=>{
+                            event.sender.send('re_get_screenshot',imageURL);
+                            fs.unlink(imagePath,(err)=>{
+                                if(err){
+                                    console.log(err);
+                                }else{
+
+                                }
+                            });
+                        });
+                        datauri.on('error',(err) => {console.log(err)});
+                        datauri.encode(imagePath);
+                    }
+
+                });
+            });
+
+            /**
+             * [traineeからのウィンドウ生成命令]
+             * @param  {[type]} 'create_guider_window' [description]
+             * @param  {[type]} {width,height,peerId}            [description]
+             * @return {[type]}                        [description]
+             */
+            ipcMain.on('create_guider_window',(event,data)=>{
+                //TODO 
+                //socket.ioでtraineeにdataオブジェクトを渡す
+                // socket.send? 'create_guider_window'
+            });
+
+            /**
+             * [trainee -> main -socket.io-> main -> guider]
+             * @param  {[type]} 'create_guider_window' [description]
+             * @param  {[type]} data            [description]
+             * @return {[type]}                        [description]
+             */
+            socket.on('create_guider_window',(data)=>{
+                //TODO
+                //window生成 -> ウィンドウロードイベント -> window.webContents.send('connect_trainee',data);
+            });
+
+
         });
     }
 };
