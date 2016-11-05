@@ -7,6 +7,7 @@ var patronusManager = null;
 var localVideoElement = null;
 var localCanvasElement = null;
 var remoteImageCanvasElement = null;
+var annotationModule = null;
 
 class PatronusGuiderManager extends PatronusManager{
 
@@ -84,7 +85,8 @@ ipcRenderer.on('connect_trainee',(event,arg)=>{
 		//WARNING user mediaの取得状況に注意 => 完全に取得できたイベントの後にやった方がよさそう
 		patronusManager.requestConnectionForData(arg.peerId);
 		patronusManager.requestConnectionForStream(arg.peerId);
-
+		annotationModule = new AnnotationModule(localCanvasElement,true,patronusManager);
 	});
 
 });
+

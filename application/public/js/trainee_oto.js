@@ -7,6 +7,7 @@ var patronusManager = null;
 var guiderVideoElement = null;
 var guiderCanvasElement = null;
 var guiderVideoCanvasElement = null;
+var annotationModule = null;
 
 class PatronusTraineeManager extends PatronusManager{
 	
@@ -29,11 +30,25 @@ class PatronusTraineeManager extends PatronusManager{
 	onDataReceived(data){
 		//ビデオサイズの交換？
 		//clickevent表記？
+		switch(data.act){
+			case 'draw_annotation' :
+				annotationModule.drawAnnotation(x,y);
+			break;
+			case 'clear_canvas' :
+				annotationModule.clearCanvas();
+			break;
+			default :
+				console.log('can not find such a act');
+				console.log(data); 
+			break;
+		}
 	}
 
 	onStreamAdded(stream){
 		this.startRemoteVideo(stream);
 	}
+
+
 }
 
 
@@ -88,7 +103,7 @@ window.onload = function(e){
 
 	patronusManager = new PatronusTraineeManager(SKYWAY_API_KEY);
 	patronusManager.setRemoteVideoElement(guiderVideoElement);
-
+	annotationModule = new AnnotationModule(guiderCanvasElement,false,patronusManager);
 }
 
 
