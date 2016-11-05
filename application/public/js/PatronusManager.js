@@ -51,7 +51,7 @@ class PatronusManager{
 			// call.answer(mediastream);
 			self.streamConnectionMap.set(call.peer,call);
 			self.initStreamConnectionEvents(call);
-			call.answer();
+			call.answer(self.localStream);
 		});	
 	}
 
@@ -156,8 +156,8 @@ class PatronusManager{
 	 * @param  {[type]} stream [description]
 	 * @return {[type]}        [description]
 	 */
-	requestConnectionForStream(peerId,stream){
-		const call = peer.call(peerId,stream);
+	requestConnectionForStream(peerId){
+		const call = this.peer.call(peerId,this.localStream);
 		this.streamConnectionMap.set(peerId,call);
 		this.initStreamConnectionEvents(call);
 	}
@@ -211,12 +211,13 @@ class PatronusManager{
 	 * @return {[type]} [description]
 	 */
 	startLocalVideo(){
+		const self = this;
 		navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(function(localstream){
 			//success navigator.getUserMedia
 			//console.log(localstream);
-			this.localStream = localstream;
-			this.localVideoElement.src = window.URL.createObjectURL(local_stream);
-			this.localVideoElement.play();	
+			self.localStream = localstream;
+			self.localVideoElement.src = window.URL.createObjectURL(localstream);
+			self.localVideoElement.play();	
 		}).catch(function(e){
 			//error navigator.getUserMedia
 			console.log('error navigator.getUserMedia');
