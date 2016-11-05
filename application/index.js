@@ -10,6 +10,7 @@ const Connector = require('./modules/connector.js');
 
 const window_builder = require(path.join(__dirname, 'modules', 'windowBuilder.js'));
 
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
