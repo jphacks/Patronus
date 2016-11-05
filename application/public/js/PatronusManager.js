@@ -214,9 +214,9 @@ class PatronusManager{
 	 * [startLocalVideo ローカルストリームを取得し設定してあるエレメントに適応]
 	 * @return {[type]} [description]
 	 */
-	startLocalVideo(){
+	startLocalVideo(video_option=true){
 		const self = this;
-		navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(function(localstream){
+		navigator.mediaDevices.getUserMedia({video:video_option,audio:true}).then(function(localstream){
 			//success navigator.getUserMedia
 			//console.log(localstream);
 			self.localStream = localstream;
