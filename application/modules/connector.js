@@ -78,6 +78,7 @@ module.exports = class Connector {
              * @return {[type]}                  [description]
              */
             ipcMain.on('get_screenshot',(event,data)=>{
+                const imageURL = "TODO";
                 screencapture(function(err,imagePath){
                     if(err){
                         console.log(err);
@@ -109,7 +110,7 @@ module.exports = class Connector {
              */
             ipcMain.on('create_guider_window',(event,data)=>{
                 //TODO 
-                //socket.ioでtraineeにdataオブジェクトを渡す
+                //socket.ioでguiderのmainにdataオブジェクトを渡す
                 // socket.send? 'create_guider_window'
             });
 
@@ -121,6 +122,7 @@ module.exports = class Connector {
              */
             socket.on('create_guider_window',(data)=>{
                 //TODO
+                //guiderのmainプロセス
                 //window生成 -> ウィンドウロードイベント -> window.webContents.send('connect_trainee',data);
             });
 
