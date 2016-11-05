@@ -16,7 +16,7 @@ class AnnotationModule{
 			if(sender){
 				self.setSenderEventMethod();
 			}else{
-
+				self.setDammySenderEventMethod();
 			}
 		}
 		this.aImage.src = '../img/finger.png';
@@ -28,17 +28,17 @@ class AnnotationModule{
 	 */
 	initMouseDownEventListener(){
 		const self = this;
-		this.canvas.addEventListener('mousedown', onDown);
+		this.canvas.addEventListener('mousedown', self.onDown);
 	}
 
 	setMouseMoveUpEventListener(){
-		this.canvas.addEventListener('mousemove',onMove);
-		this.canvas.addEventListener('mouseup',onUp);
+		this.canvas.addEventListener('mousemove',self.onMove);
+		this.canvas.addEventListener('mouseup',self.onUp);
 	}
 
 	removeMouseMoveUpEventListener(){
-		this.canvas.removeEventListener('mousemove', onMove);
-		this.canvas.removeEventListener('mouseup',onUp);
+		this.canvas.removeEventListener('mousemove', self.onMove);
+		this.canvas.removeEventListener('mouseup',self.onUp);
 	}
 
 	/*
