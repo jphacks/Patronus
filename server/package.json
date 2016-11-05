@@ -19,5 +19,8 @@
     "tatsuya-ohbe@live.jp",
     "kyoshida@toralab.org"
   ],
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "socket.io": "^1.5.1"
+  }
 }
