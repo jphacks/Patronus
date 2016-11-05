@@ -13,7 +13,11 @@ class AnnotationModule{
 		this.scale = 0.4;
 		this.aImage.onload = function(){
 			self.initMouseDownEventListener();
-			self.setSenderEventMethod();
+			if(sender){
+				self.setSenderEventMethod();
+			}else{
+
+			}
 		}
 		this.aImage.src = '../img/finger.png';
 
@@ -84,12 +88,18 @@ class AnnotationModule{
 		this.onMove = function(e){
 			const clientX = e.clientX;
 			const clientY = e.clientY;
-			this.drawAnnotation(clientX,clientY);		
+			self.drawAnnotation(clientX,clientY);		
 		}
 
 		this.onUp = function(e){
-			this.clearCanvas();						
+			self.clearCanvas();						
 		}
+	}
+
+	setDammySenderEventMethod(){
+		this.onDown = function(){};
+		this.onMove = function(){};
+		this.onUp = function(){};
 	}
 	
 }
