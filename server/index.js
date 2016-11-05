@@ -13,18 +13,6 @@ const room_manager = new RoomManager();
 
 app.use(express.static(path.join(__dirname, '..', 'application', 'public')));
 
-app.get('/',function(req,res){
-    res.sendfile('./index.html');
-});
-
-app.get('/guider_oto',function(req,res){
-    res.sendfile('./guider_oto.html');
-});
-
-app.get('/trainee_oto',function(req,res){
-    res.sendfile('./trainee_oto.html');  
-});
-
 app.listen(58101);
 
 
