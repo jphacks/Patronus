@@ -6,7 +6,7 @@ const defaultMenu = require('electron-default-menu');
 
 const { app, BrowserWindow, Menu, shell } = electron;
 
-const pairing = require('./modules/pairing.js');
+const Connector = require('./modules/connector.js');
 
 const window_builder = require(path.join(__dirname, 'modules', 'windowBuilder.js'));
 
