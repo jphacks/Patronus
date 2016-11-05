@@ -1,7 +1,7 @@
 {
-  "name": "ng_1608",
+  "name": "patronus_electron_application",
   "version": "0.1.0",
-  "description": "jphacks2016 名古屋8チームのプロダクト",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "./node_modules/.bin/electron index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@sztm.github.com:jphacks/NG_1608.git"
+    "url": "https://github.com/jphacks/NG_1608.git"
   },
   "keywords": [
     "jphacks"

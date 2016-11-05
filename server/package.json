@@ -1,0 +1,23 @@
+{
+  "name": "patronus_server",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jphacks/NG_1608.git"
+  },
+  "keywords": [
+    "jphacks"
+  ],
+  "author": [
+    "suzutomo@toralab.org",
+    "tatsuya-ohbe@live.jp",
+    "kyoshida@toralab.org"
+  ],
+  "license": "ISC"
+}
