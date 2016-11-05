@@ -1,272 +1,87 @@
 'use strict'
 
+const {ipcRenderer} = require('electron');
+var traineeScreenWidth = null;
+var traineeScreenHeight = null;
+var patronusManager = null;
+var localVideoElement = null;
+var localCanvasElement = null;
+var remoteImageCanvasElement = null;
 
-class PatronusManager{
-	constructor(apikey,options={}){
-		this.peer = new Peer({key:apikey});
-		this.peerId = "";
-		this.pairId = "";
-		this.dataConnectionMap = new Map();
-		this.streamConnectionMap = new Map();
-
-		this.localVideoElement = null;
-		this.remoteVideoElement = null;
-
-		this.eventMethods = {};
-
-	}
-
-	initPeerEventListener(){
-		this.peer.on('open',(id)=>{
-			this.peerId = id;
-			console.log(id);
-			//startVideo();
-			this.setOnCloseEvent();
-		});
-		//	startVideo();
-
-		this.peer.on('close',function(){
-			this.peer.destroy();
-		});
-
-
-		/**
-		 * [description] data用のコネクション要求が呼ばれた時のイベント
-		 * @param  {[type]} conn){	console.log(conn);	connectedMap.set(conn.peer,conn);	requestConnectionForData(conn);} [description]
-		 * @return {[type]}                                                                                                [description]
-		 */
-		this.peer.on('connection',(conn)=>{
-			console.log(conn);
-			this.dataConnectionMap.set(conn.peer,conn);
-			this.initDataConnectionEvents(conn);
-			//requestConnectionForData(conn);
-		});
-
-
-		/**
-		 * [description] stream用のコネクション要求が呼ばれた時のイベント
-		 * @param  {[type]} conn){} [description]
-		 * @return {[type]}           [description]
-		 */
-		this.peer.on('call',(call)=>{
-			console.log(call);
-			// call.answer(mediastream);
-			this.streamConnectionMap.set(call.peer,call);
-			this.initStreamConnectionEvents(call);
-			call.answer();
-		});	
-	}
-
-
-	/**
-	 * [initDataConnectionEvents データコネクション用のイベント初期化]
-	 * @param  {[type]} conn [description]
-	 * @return {[type]}      [description]
-	 */
-	initDataConnectionEvents(conn){
-		const self = this;
-		//リモートを引数に
-		//各種通信イベントを設定する
-		conn.on('open', function() {
-	  	// メッセージを受信
-		  
-	  		conn.on('data', function(data) {
-	  			//データ受信イベント
-	  			//画像もたぶんオッケー
-			    console.log('Received', data);
-			    self.onDataConnectionReceived(data);
-			});
-
-			conn.on('error',function(e){
-				console.log('error data connection'+e);
-				self.onDataConnectionError(e);
-			})
-
-			conn.on('close',function(){
-				console.log('data connection closed');
-				self.onDataConnectionClosed();
-			});
-
-			self.onDataConnectionOpened(conn);
-		  //console.log('send hello');
-		  //conn.send('Hello!');
-		});	
-	}
-
-
-	/**
-	 * [initStreamConnectionEvents streamに関するイベントの初期化]
-	 * @param {[type]} call [description]
-	 */
-	initStreamConnectionEvents(call){
-		const self = this;
-		call.on('stream',(stream)=>{
-			//リモートのstreamの追加時に呼ばれる
-			console.log(stream);
-			//TODO リモートの設定
-			//this.startRemoteVideo(stream);
-			self.onStreamAdded();
-		});
-		call.on('close',()=>{
-			console.log('close stream connection');
-			self.onStreamClosed();
-		});
-		call.on('error',(e)=>{
-			console.log('erron on stream connection');
-			console.log(e);
-			self.onStreamError(e);
-		});
-	}
-
-
-	/**
-	 * 通信メソッド 
-	 */
-	
-
-
-	/**
-	 * [requestConnectionForData データ通信用のコネクションの要求]
-	 * @param  {[type]} peerId [description]
-	 * @return {[type]}        [description]
-	 */
-	requestConnectionForData(peerId){
-		const conn = this.peer.connect(peerId);
-		this.dataConnectionMap.set(peerId,conn);
-		this.initDataConnectionEvents(conn);
-	}
-
-
-	/**
-	 * [requestConnectionForStream ストリーム共有用のコネクションの要求]
-	 * @param  {[type]} peerId [description]
-	 * @param  {[type]} stream [description]
-	 * @return {[type]}        [description]
-	 */
-	requestConnectionForStream(peerId,stream){
-		const call = peer.call(peerId,stream);
-		this.streamConnectionMap.set(peerId,call);
-		this.initStreamConnectionEvents(call);
-	}
-
-	/**
-	 * [sendData2EachConnection データをブロードキャスト]
-	 * @param  {[type]} data [description]
-	 * @return {[type]}      [description]
-	 */
-	broadcastData2AllConnection(data){
-		this.dataConnectionMap.forEach((value,key,map)=>{
-			value.send(data);
-		});
-	}
-
-	/**
-	 * [sendData2SomeConnection 指定したpeerIdを持つ相手にデータを送る]
-	 * @param  {[type]} peerId [description]
-	 * @param  {[type]} data   [description]
-	 * @return {[type]}        [description]
-	 */
-	sendData2SomeConnection(peerId,data){
-		const target = this.dataConnectionMap.get(peerId);
-		if(target){
-			target.send(data);
-		}else{
-			console.log('sendData2SomeConnection : peerId do not exist')
-		}
-	}
-
-
-	/**
-	 * [setLocalVideoElement 自分のビデオエレメントを登録]
-	 * @param {[type]} elm [description]
-	 */
-	setLocalVideoElement(elm){
-		this.localVideoElement = elm;
-	}
-
-	/**
-	 * [setRemoteVideoElement リモートのビデオエレメントを登録]
-	 * @param {[type]} elm [description]
-	 */
-	setRemoteVideoElement(elm){
-		this.remoteVideoElement = elm;
-	}
-
-
-	/**
-	 * [startLocalVideo ローカルストリームを取得し設定してあるエレメントに適応]
-	 * @return {[type]} [description]
-	 */
-	startLocalVideo(){
-		navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(function(localstream){
-			//success navigator.getUserMedia
-			//console.log(localstream);
-			this.localStream = localstream;
-			this.localVideoElement.src = window.URL.createObjectURL(local_stream);
-			this.localVideoElement.play();	
-		}).catch(function(e){
-			//error navigator.getUserMedia
-			console.log('error navigator.getUserMedia');
-			console.log(e);
-		});
-	}
-
-	/**
-	 * [startRemoteVideo 設定してあるエレメントにリモートストリームを適応]
-	 * @param  {[type]} stream [description]
-	 * @return {[type]}        [description]
-	 */
-	startRemoteVideo(stream){
-		//リモートが一つのみしか対応してない
-		this.remoteVideoElement.src = window.URL.createObjectURL(stream);
-		this.remoteVideoElement.play();
-	}
-
-
-
-	/**
-	 *  need override
-	 */
-
-	onDataConnectionOpened(conn){
-
-	}
-
-	onDataConnectionReceived(data){
-
-	}
-
-	onDataConnectionClosed(){
-
-	}
-
-	onDataConnectionError(e){
-
-	}
-
-	onStreamClosed(){
-
-	}
-
-	onStreamError(e){
-
-	}
-
-	onStreamAdded(stream){
-
-	}
-
-}
-
-
-class PatronusManagerForGuider extends PatronusManager{
-
+class PatronusGuiderManager extends PatronusManager{
 
 	constructor(apikey){
 		super(apikey);
-
 	}
 
 
+	/*
+		override
+	 */
+	 onDataReceived(data){
+	 	switch(data.act){
+	 		case 'sync_screenshot' :
+	 			//.imgはurl
+	 			const remoteImageContext = remoteImageCanvasElement.getContext('2d');
+	 			remoteImageContext.drawImage(data.img,0,0,remoteImageCanvasElement.width,remoteImageCanvasElement.height);
+	 		break;
+	 		default :
+	 			console.log('can not find such a act onDataReceived');
+	 			console.log(data);
+	 		break;
+	 	}
+	 }
 
 }
+
+
+window.onload = function(e){
+	patronusManager = new PatronusGuiderManager(SKYWAY_API_KEY);
+}
+
+ipcRenderer.on('connect_trainee',(event,arg)=>{
+	traineeScreenWidth = arg.width;
+	traineeScreenHeight = arg.height;
+
+	localVideoElement = document.createElement('video');
+	localCanvasElement = document.createElement('canvas');
+	remoteImageCanvasElement = document.createElement('canvas');
+
+	//表示はしない
+	localVideoElement.width = traineeScreenWidth;
+	localVideoElement.height = traineeScreenHeight;
+	localVideoElement.style.width = String(traineeScreenWidth) + "px";
+	localVideoElement.style.height = String(traineeScreenHeight) + "px";
+	localVideoElement.id = "local_video";
+	localVideoElement.style.backgroundColor = 'rgba(0,0,0,0)';
+	localVideoElement.style.position = "fixed";
+	localVideoElement.style.zIndex = 0;
+
+	localCanvasElement.width = traineeScreenWidth;
+	localCanvasElement.height = traineeScreenHeight;
+	localCanvasElement.style.width = String(traineeScreenWidth)+"px";
+	localCanvasElement.style.height = String(traineeScreenHeight)+"px";
+	localCanvasElement.style.backgroundColor = 'rgba(0,0,0,0)'; 
+	localCanvasElement.id = "local_canvas";
+	localCanvasElement.style.position = "fixed";
+	localVideoElement.style.zIndex = 1;
+
+	remoteImageCanvasElement.width = traineeScreenWidth;
+	remoteImageCanvasElement.height = traineeScreenHeight;
+	remoteImageCanvasElement.style.width = traineeScreenWidth+"px";
+	remoteImageCanvasElement.style.height = traineeScreenHeight+"px";
+	remoteImageCanvasElement.style.backgroundColor = 'rgba(0,0,0,0)';
+	remoteImageCanvasElement.id = "remote_canvas";
+	remoteImageCanvasElement.style.position = "fixed";
+	remoteImageCanvasElement.zIndex = 0;
+
+	document.body.appendChild(remoteImageCanvasElement);
+	document.body.appendChild(localCanvasElement);
+
+	patronusManager.localVideoElement = localVideoElement;
+	patronusManager.startLocalVideo({width:traineeScreenWidth,height:traineeScreenHeight});
+	//WARNING user mediaの取得状況に注意 => 完全に取得できたイベントの後にやった方がよさそう
+	patronusManager.requestConnectionForData(arg.peerId);
+	patronusManager.requestConnectionForStream(arg.peerId);
+
+});
