@@ -70,7 +70,7 @@ module.exports = class Connector {
             /**
              * video window edit by kyoshida
              */
-            
+
             /**
              * [screenshotを取って返却する]
              * @param  {[type]} 'get_screenshot' [description]
@@ -85,7 +85,7 @@ module.exports = class Connector {
                     }else{
                         //console.log(imagePath);
                         const datauri = new Datauri();
-                        dataurl.on('encoded',(content)=>{
+                        datauri.on('encoded',(content)=>{
                             event.sender.send('re_get_screenshot',imageURL);
                             fs.unlink(imagePath,(err)=>{
                                 if(err){
@@ -95,7 +95,7 @@ module.exports = class Connector {
                                 }
                             });
                         });
-                        datauri.on('error',(err) => {console.log(err)});
+                        datauri.on('error',(err) => {console.log(err);});
                         datauri.encode(imagePath);
                     }
 
@@ -109,9 +109,10 @@ module.exports = class Connector {
              * @return {[type]}                        [description]
              */
             ipcMain.on('create_guider_window',(event,data)=>{
-                //TODO 
+                //TODO
                 //socket.ioでguiderのmainにdataオブジェクトを渡す
                 // socket.send? 'create_guider_window'
+                socket.emit('create_guider_window', data);
             });
 
             /**
@@ -124,9 +125,8 @@ module.exports = class Connector {
                 //TODO
                 //guiderのmainプロセス
                 //window生成 -> ウィンドウロードイベント -> window.webContents.send('connect_trainee',data);
+                this.mainWindow.webContents.send('create_guider_window', data);
             });
-
-
         });
     }
 };
