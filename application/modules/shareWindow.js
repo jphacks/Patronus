@@ -7,7 +7,7 @@ const socket = client.connect('http://localhost:58100');
 let parentWindow;
 let childWindow;
 
-const hona = function(){
+const ShareWindow = function(){
 ipcMain.on('openURL', (e, url) => {
     parentWindow.loadURL(url);
 });
@@ -112,4 +112,4 @@ return{
 
 }();
 
-module.exports = hona;
+module.exports = ShareWindow;

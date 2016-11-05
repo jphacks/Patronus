@@ -38,6 +38,5 @@ module.exports = function(mainWindow, role) {
         socket.on('error_message', (data) => {
             console.error(data.error);
         });
-
     });
 };

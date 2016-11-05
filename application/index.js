@@ -45,8 +45,6 @@ app.on('ready', (err) => {
     createWindow();
 
     pairing(mainWindow, role);
-
-    shareWindow.createParentWindow(`file://${__dirname}/public/test.html`);
 });
 
 // Quit when all windows are closed.
