@@ -5,6 +5,7 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 
 const pairing = require('./modules/pairing.js');
+const shareWindow = require('./modules/shareWindow.js');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -44,6 +45,7 @@ app.on('ready', (err) => {
     createWindow();
 
     pairing(mainWindow, role);
+    shareWindow.createParentWindow("http://www.yahoo.co.jp/");
 });
 
 // Quit when all windows are closed.
