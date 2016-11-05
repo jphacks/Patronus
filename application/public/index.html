@@ -3,15 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
-    <script src="./js/pairing.js" charset="utf-8"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', (e) => {
-            console.log('paring');
-            makePairing();
-        });
-    </script>
+    <link rel="stylesheet" href="./css/index.css">
+    <script src="./js/index.js" charser="utf-8"></script>
 </head>
 <body>
-    Hello, World!
+    <div id="page_wrapper">
+        <img id="top_logo" src="./img/logo.png" alt="パトローナス ロゴ">
+        <div id="control">
+            <div class="page show" id="select_role">
+                <button class="top_button top_item" onclick="setRole('guider');">教えちゃう</button><br>
+                <button class="top_button top_item" onclick="setRole('trainee')">教えてもらう</button>
+            </div>
+            <div class="page" id="input_token">
+                <form onsubmit="connectRoom(); return false;">
+                    <input id="token_input" type="text" class="top_item"><br>
+                    <input type="submit" class="top_button top_item">
+                </form>
+            </div>
+            <div class="page" id="show_token">
+                <div id="token" class="top_item"></div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
