@@ -8,11 +8,40 @@ var guiderVideoElement = null;
 var guiderCanvasElement = null;
 var guiderVideoCanvasElement = null;
 
+class patronusTraineeManager extends PatronusManager{
+	
+	constructor(apikey){
+		super(apikey);
+	}
+
+	/*
+		override
+	 */
+	onPeerOpened(id){
+		console.log('override!!');
+		ipcRenderer.send('create_guider_window',{peerId:id,width:screenWidth,height:screenHeight});
+	}
+
+	onDataConnectionOpend(conn){
+		loopGetScreenShotAndSync();
+	}
+
+	onDataReceived(data){
+		//ビデオサイズの交換？
+		//clickevent表記？
+	}
+
+	onStreamAdded(stream){
+		this.startRemoteVideo(stream);
+	}
+}
+
+
 /**
  * [onload windowが読み込まれた時]
  * @return {[type]} [description]
  */
-window.onload = function(){
+window.onload = function(e){
 	screenWidth = window.parent.screen.width;
 	screenHeight = window.parent.screen.height;
 
@@ -57,28 +86,9 @@ window.onload = function(){
 		guiderVideoCanvasElement.drawImage(guiderVideoElement, 0, 0, guiderVideoElement.width, guiderVideoElement.height); 
 	});
 
-	PatronusManager.prototype.onPeerOpened = function(id){
-		console.log('override!!');
-		//ipcRenderer.send('create_guider_window',{peerId:id,width:screenWidth,height:screenHeight});
-	}
 
-	PatronusManager.prototype.onDataConnectionOpend = function(conn){
-		loopGetScreenShotAndSync();
-	}
-
-	patronusManager.prototype.onDataReceived = function(data){
-		//ビデオサイズの交換？
-		//clickevent表記？
-	}
-
-	patronusManager.prototype.onStreamAdded = function(stream){
-		this.startRemoteVideo(stream);
-	}
-
-
-	patronusManager = new PatronusManager(SKYWAY_API_KEY);
+	patronusManager = new PatronusTraineeManager(SKYWAY_API_KEY);
 	patronusManager.setRemoteVideoElement(guiderVideoElement);
-
 
 }
 
