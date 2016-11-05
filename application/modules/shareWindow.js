@@ -1,10 +1,16 @@
 const BrowserWindow = require('electron').BrowserWindow;
+
+const ipcMain = require('electron').ipcMain;
 const client = require('socket.io-client');
 const socket = client.connect('http://localhost:58100');
 
+let parentWindow;
 let childWindows = [];
 
 const hona = function(){
+ipcMain.on('openURL', (e, url) => {
+    parentWindow.loadURL(url);
+});
 
 socket.on('connect', function(){
     console.log('connect to socket.io server');
@@ -43,7 +49,6 @@ socket.on('connect', function(){
 
 
 function createParentWindow(url){
-    let parentWindow;
     parentWindow = new BrowserWindow({
         // parent: mainWindow,
         x: 0,
@@ -52,7 +57,7 @@ function createParentWindow(url){
         height: 600
     });
     parentWindow.loadURL(url);
-    parentWindow.webContents.openDevTools();
+    // parentWindow.webContents.openDevTools();
 
     parentWindow.on('closed', function() {
         socket.emit('closeWindow', {});
@@ -119,7 +124,6 @@ function createChildWindow(opt){
 
 
 return{
-    // windowSocket: windowSocket,
     createParentWindow: createParentWindow,
     createChildWindow: createChildWindow
 }

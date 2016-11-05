@@ -46,8 +46,7 @@ app.on('ready', (err) => {
 
     pairing(mainWindow, role);
 
-    shareWindow.windowSocket();
-    shareWindow.createParentWindow("http://www.yahoo.co.jp/");
+    shareWindow.createParentWindow(`file://${__dirname}/public/test.html`);
 });
 
 // Quit when all windows are closed.
