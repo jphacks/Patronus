@@ -1,6 +1,6 @@
 'use strict'
 
-// const {ipcRenderer} = require('electron');
+const {ipcRenderer} = require('electron');
 var screenWidth = null;
 var screenHeight = null;
 var patronusManager = null;
@@ -19,7 +19,7 @@ class PatronusTraineeManager extends PatronusManager{
 	 */
 	onPeerOpened(id){
 		console.log('override!!');
-		//ipcRenderer.send('create_guider_window',{peerId:id,width:screenWidth,height:screenHeight});
+		ipcRenderer.send('create_guider_window',{peerId:id,width:screenWidth,height:screenHeight});
 	}
 
 	onDataConnectionOpend(conn){
@@ -93,16 +93,16 @@ window.onload = function(e){
 
 
 function loopGetScreenShotAndSync(){
-//	ipcRenderer.send('get_screenshot',{})
+	ipcRenderer.send('get_screenshot',{})
 }
 
 
-// ipcRenderer.on('re_get_screenshot',(event,arg)=>{
-// 	console.log(arg);
-// 	//url化必要そう
-// 	patronusManager.broadcastData2AllConnection({act:"sync_screenshot",img:arg});
-// 	setTimeout(loopGetScreenShotAndSync,1000);
-// });
+ipcRenderer.on('re_get_screenshot',(event,arg)=>{
+	console.log(arg);
+	//url化必要そう
+	patronusManager.broadcastData2AllConnection({act:"sync_screenshot",img:arg});
+	setTimeout(loopGetScreenShotAndSync,1000);
+});
 
 
 
