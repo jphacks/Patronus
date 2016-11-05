@@ -14,7 +14,8 @@ module.exports = {
         });
 
         // and load the index.html of the app.
-        mainWindow.loadURL(`file://${__dirname}/../public/index.html`);
+        // mainWindow.loadURL(`file://${__dirname}/../public/index.html`);
+        mainWindow.loadURL('http://localhost:58101')
 
         // Open the DevTools.
         // mainWindow.webContents.openDevTools();
@@ -41,7 +42,8 @@ module.exports = {
         });
 
         // and load the index.html of the app.
-        videoWindow.loadURL(`file://${__dirname}/../public/${role.role}_oto.html`);
+        //videoWindow.loadURL(`file://${__dirname}/../public/${role.role}_oto.html`);
+        videoWindow.loadURL(`http://localhost:58101/${role.role}_oto.html`);
 
         // Open the DevTools.
         // mainWindow.webContents.openDevTools();
