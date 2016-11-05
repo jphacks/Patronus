@@ -38,13 +38,13 @@ module.exports = class Connector {
             /* ペアリングトークン作成要求 */
             ipcMain.on('make_pairing_token', (event, args) => {
                 console.log('make pairing token: ', args);
-                this.role.role = 'trainee';
                 socket.emit('make_pairing_token', args);
             });
 
             /* 作成したペアリングトークンの返信 */
             socket.on('pairing_token', (data) => {
                 console.log('pairing token: ', data);
+                this.role.role = 'trainee';
                 this.mainWindow.webContents.send('pairing_token', data);
             });
 
@@ -57,6 +57,7 @@ module.exports = class Connector {
 
             /* 部屋への入室 */
             socket.on('join_room', (data) => {
+                this.role.joined = true;
                 console.log('join_room: ', data.body, ', as: ', this.role.role);
                 this.mainWindow.webContents.send('join_room', data);
                 this.mainWindow.close();

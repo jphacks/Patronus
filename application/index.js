@@ -67,12 +67,12 @@ app.on('activate', function() {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
-        if (role.role === null) {
-            mainWindow = window_builder.createMainWindow(windowCloser);
-        } else {
+        if (role.joined) {
             mainWindow = window_builder.createVideoWindow(role, windowCloser);
+        } else {
+            mainWindow = window_builder.createMainWindow(windowCloser);
         }
-        connector.setMainWindow(mainWindow);
+        connector.changeMainWindow(mainWindow);
     }
 });
 
@@ -82,8 +82,8 @@ app.on('activate', function() {
 /* mainWindowが閉じたときのコールバック */
 function windowCloser() {
     mainWindow = null;
-    if(!role.role) {
+    if(role.joined) {
         mainWindow = window_builder.createVideoWindow(role, windowCloser);
-        connector.setMainWindow(mainWindow);
+        connector.changeMainWindow(mainWindow);
     }
 }
