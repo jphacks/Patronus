@@ -73,6 +73,7 @@ app.on('activate', function() {
         } else {
             mainWindow = window_builder.createVideoWindow(role, windowCloser);
         }
+        connector.setMainWindow(mainWindow);
     }
 });
 
@@ -84,5 +85,6 @@ function windowCloser() {
     mainWindow = null;
     if(!role.role) {
         mainWindow = window_builder.createVideoWindow(role, windowCloser);
+        connector.setMainWindow(mainWindow);
     }
 }
