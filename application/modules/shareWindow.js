@@ -5,46 +5,32 @@ const client = require('socket.io-client');
 const socket = client.connect('http://localhost:58100');
 
 let parentWindow;
-let childWindows = [];
+let childWindow;
 
 const hona = function(){
 ipcMain.on('openURL', (e, url) => {
     parentWindow.loadURL(url);
 });
 
-socket.on('connect', function(){
-    console.log('connect to socket.io server');
+socket.on('connect', () => {
+    console.log('connected to socket.io server');
 
-    socket.on('openURL', function(url){
-        child.close()
-        // createChildWindow();
-        // childWindows[0].setPosition(pos[0], pos[1], true);
-    })
-    socket.on('createWindow', function(opt){
+    socket.on('createWindow', (opt) => {
         createChildWindow(opt);
-        // childWindows[0].setPosition(pos[0], pos[1], true);
     })
-    socket.on('closeWindow', function(){
-        childWindows.forEach(function(childWindow){
-            childWindow.close();
-        });
+    socket.on('closeWindow', () => {
+        if(childWindow != null){ childWindow.close(); }
     })
-    socket.on('move', function(pos){
-        childWindows[0].setPosition(pos[0], pos[1], true);
+    socket.on('move', (pos) => {
+        childWindow.setPosition(pos[0], pos[1], true);
     })
-    socket.on('resize', function(size){
-        childWindows[0].setSize(size[0], size[1], true);
+    socket.on('resize', (size) => {
+        childWindow.setSize(size[0], size[1], true);
     })
-    socket.on('updated', function(url){
-        childWindows[0].loadURL(url);
+    socket.on('updated', (url) => {
+        childWindow.loadURL(url);
     })
-    socket.on('scroll', function(top){
-        console.log(top);
-        // childWindows[0].setSize(size[0], size[1], true);
-    })
-    // socket.send('how are you?');
-    // socket.disconnect();
-    // process.exit(0);
+
 });
 
 
@@ -54,22 +40,22 @@ function createParentWindow(url){
         x: 0,
         y: 0,
         width: 800,
-        height: 600
+        height: 600,
+        alwaysOnTop: true
     });
     parentWindow.loadURL(url);
-    // parentWindow.webContents.openDevTools();
 
-    parentWindow.on('closed', function() {
+    parentWindow.on('closed', () => {
         socket.emit('closeWindow', {});
         parentWindow = null;
     });
-    parentWindow.on('move', function(){
+    parentWindow.on('move', () => {
         socket.emit('move', parentWindow.getPosition());
     });
-    parentWindow.on('resize', function(){
+    parentWindow.on('resize', () => {
         socket.emit('resize', parentWindow.getSize());
     });
-    parentWindow.on('page-title-updated', function(e, title){
+    parentWindow.on('page-title-updated', (e, title) => {
         const url = parentWindow.webContents.getURL();
         console.log(url)
         socket.emit('updated', url);
@@ -104,7 +90,6 @@ function createParentWindow(url){
 
 function createChildWindow(opt){
     console.log(opt)
-    let childWindow;
     childWindow = new BrowserWindow({
         x: opt.x,
         y: opt.y,
@@ -115,21 +100,16 @@ function createChildWindow(opt){
         resizable: false
     });
     childWindow.loadURL(opt.url);
-    childWindow.on('closed', function() {
+    childWindow.on('closed', () => {
         childWindow = null;
     });
-    childWindows.push(childWindow);
 }
-
-
 
 return{
     createParentWindow: createParentWindow,
     createChildWindow: createChildWindow
 }
 
-
 }();
-
 
 module.exports = hona;
