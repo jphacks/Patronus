@@ -5,7 +5,7 @@ const client = require('socket.io-client');
 const socket = client.connect('http://localhost:58100');
 
 let parentWindow;
-let childWindow;
+let childWindow = {};
 
 const ShareWindow = function(){
 ipcMain.on('openURL', (e, url) => {
@@ -18,17 +18,17 @@ socket.on('connect', () => {
     socket.on('createWindow', (opt) => {
         createChildWindow(opt);
     })
-    socket.on('closeWindow', () => {
-        if(childWindow != null){ childWindow.close(); }
+    socket.on('closeWindow', (data) => {
+        if(childWindow[data.id] != null){ childWindow.close(); }
     })
-    socket.on('move', (pos) => {
-        childWindow.setPosition(pos[0], pos[1], true);
+    socket.on('move', (data) => {
+        childWindow[data.id].setPosition(data.pos[0], data.pos[1], true);
     })
-    socket.on('resize', (size) => {
-        childWindow.setSize(size[0], size[1], true);
+    socket.on('resize', (data) => {
+        childWindow[data.id].setSize(data.size[0], data.size[1], true);
     })
-    socket.on('updated', (url) => {
-        childWindow.loadURL(url);
+    socket.on('updated', (data) => {
+        childWindow[data.id].loadURL(data.url);
     })
 
 });
@@ -37,10 +37,14 @@ socket.on('connect', () => {
 function createParentWindow(url){
     parentWindow = new BrowserWindow({
         // parent: mainWindow,
+        hona: 10,
         x: 0,
         y: 0,
         width: 800,
         height: 600,
+        minWidth:100,
+        minHeight: 50,
+        darkTheme: true,
         alwaysOnTop: true
     });
     parentWindow.loadURL(url);
@@ -61,6 +65,7 @@ function createParentWindow(url){
         socket.emit('updated', url);
     })
     const opt = {
+        id: 10,
         x: parentWindow.getPosition()[0],
         y: parentWindow.getPosition()[1],
         width: parentWindow.getSize()[0],
@@ -89,8 +94,8 @@ function createParentWindow(url){
 }
 
 function createChildWindow(opt){
-    console.log(opt)
-    childWindow = new BrowserWindow({
+    // console.log(opt);
+    childWindow[opt.id] = new BrowserWindow({
         x: opt.x,
         y: opt.y,
         width: opt.width,
@@ -99,9 +104,9 @@ function createChildWindow(opt){
         movable: false,
         resizable: false
     });
-    childWindow.loadURL(opt.url);
-    childWindow.on('closed', () => {
-        childWindow = null;
+    childWindow[id].loadURL(opt.url);
+    childWindow[id].on('closed', () => {
+        childWindow[id] = null;
     });
 }
 
