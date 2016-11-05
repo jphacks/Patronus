@@ -13,8 +13,11 @@ let mainWindow;
 function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600
+        width: 600,
+        height: 400,
+        center: true,
+        titleBarStyle: 'hidden-inset',
+        movable: true
     });
 
     // and load the index.html of the app.
