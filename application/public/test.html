@@ -32,36 +32,20 @@ body{
  font-size:14px;
  min-height:20px;
 }
-#webview_wrapper{
- height:100%;
-}
+
 </style>
 
 
 </head>
 <body>
 
-<!-- 
-<form>
-	<input type="text" id="url"  value="http://electron.atom.io/">
-	<button onclick="openURL()">Yo</button>
-</form> -->
-<!-- <webview id="foo" src="https://www.github.com/" style="display:inline-flex; width:640px; height:480px"></webview> -->
 
  <div id="menu-bar">
    <input type="text" id="url" value="http://electron.atom.io/"></input>
    <button onclick="load();">Load</button>
-   <button onclick="opendev();">Open Dev Tool</button>
  </div>
- <div id="webview_wrapper">
- </div>
+
 <script type="text/javascript">
-function openURL(){
-	const url = document.getElementById("url").value;
-	console.log(url)
-	const webview = document.getElementById('foo');
-	webview.loadURL(url);
-}
 
 // In renderer process (web page).
 const {ipcRenderer} = require('electron')
@@ -80,17 +64,10 @@ function load(){
  // get url
  var url = document.getElementById("url").value;
 
- // create_new_webview_instanse
- var newWebview = document.createElement("webview");
- newWebview.id = "foo";
- newWebview.setAttribute("src",url);
- // append new_webview
- webview_wrapper.appendChild(newWebview);
+ipcRenderer.send('openURL', url);
+
 }
-function opendev(){
- var webview = document.getElementById("foo");
- webview.openDevTools();
-}
+
 
 </script>
 
