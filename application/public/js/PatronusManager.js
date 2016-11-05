@@ -67,6 +67,7 @@ class PatronusManager{
 	 */
 	initDataConnectionEvents(conn){
 		const self = this;
+
 		//リモートを引数に
 		//各種通信イベントを設定する
 		conn.on('open', function() {
@@ -102,6 +103,7 @@ class PatronusManager{
 	 */
 	initStreamConnectionEvents(call){
 		const self = this;
+		console.log(call);
 		call.on('stream',(stream)=>{
 			//リモートのstreamの追加時に呼ばれる
 			console.log(stream);

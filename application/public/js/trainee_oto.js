@@ -8,7 +8,7 @@ var guiderVideoElement = null;
 var guiderCanvasElement = null;
 var guiderVideoCanvasElement = null;
 
-class patronusTraineeManager extends PatronusManager{
+class PatronusTraineeManager extends PatronusManager{
 	
 	constructor(apikey){
 		super(apikey);
@@ -19,7 +19,7 @@ class patronusTraineeManager extends PatronusManager{
 	 */
 	onPeerOpened(id){
 		console.log('override!!');
-		ipcRenderer.send('create_guider_window',{peerId:id,width:screenWidth,height:screenHeight});
+		//ipcRenderer.send('create_guider_window',{peerId:id,width:screenWidth,height:screenHeight});
 	}
 
 	onDataConnectionOpend(conn){
@@ -58,21 +58,21 @@ window.onload = function(e){
 	guiderVideoElement.style.position="fixed";
 	guiderVideoElement.style.zIndex = 0;
 
-	guiderVideoElement.width = screenWidth;
-	guiderVideoElement.height = screenHeight;
-	guiderVideoElement.style.width = String(screenWidth)+'px';
-	guiderVideoElement.style.height = String(screenHeight)+'px';
-	guiderVideoElement.style.backgroundColor = 'rgba(0,0,0,0)'
-	guiderVideoElement.id = 'remote_video';
-	guiderVideoElement.style.position="fixed";
-	guiderVideoElement.style.zIndex = 0;
+	guiderVideoCanvasElement.width = screenWidth;
+	guiderVideoCanvasElement.height = screenHeight;
+	guiderVideoCanvasElement.style.width = String(screenWidth)+'px';
+	guiderVideoCanvasElement.style.height = String(screenHeight)+'px';
+	guiderVideoCanvasElement.style.backgroundColor = 'rgba(0,0,0,0)'
+	guiderVideoCanvasElement.id = 'remote_video_canvas';
+	guiderVideoCanvasElement.style.position="fixed";
+	guiderVideoCanvasElement.style.zIndex = 0;
 
 	guiderCanvasElement.width = screenWidth;
 	guiderCanvasElement.height = screenHeight;
 	guiderCanvasElement.style.width = String(screenWidth)+'px';
 	guiderCanvasElement.style.height = String(screenHeight)+'px';
 	guiderCanvasElement.style.backgroundColor = 'rgba(0,0,0,0)';
-	guiderCanvasElement.style.id = 'remote_canvas';
+	guiderCanvasElement.id = 'remote_canvas';
 	guiderCanvasElement.style.position="fixed";
 	guiderCanvasElement.style.zIndex = 1;
 
