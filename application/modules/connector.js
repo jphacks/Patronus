@@ -113,6 +113,7 @@ module.exports = class Connector {
                 //TODO
                 //socket.ioでguiderのmainにdataオブジェクトを渡す
                 // socket.send? 'create_guider_window'
+                console.log('create guider window from browser: ', data);
                 socket.emit('create_guider_window', data);
             });
 
@@ -126,6 +127,7 @@ module.exports = class Connector {
                 //TODO
                 //guiderのmainプロセス
                 //window生成 -> ウィンドウロードイベント -> window.webContents.send('connect_trainee',data);
+                console.log('create guider window from socket: ', data);
                 this.mainWindow.webContents.send('create_guider_window', data);
             });
         });
