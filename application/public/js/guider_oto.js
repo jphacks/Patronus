@@ -41,7 +41,7 @@ window.onload = function(e){
 	var arg = {
 		width:2560,
 		height:1440,
-		peerId:"gSLQcQ07BB7TD4vC"
+		peerId:"MSJgpcAHfsWkE2xQ"
 	}
 
 
@@ -89,11 +89,12 @@ window.onload = function(e){
 
 
 	patronusManager.localVideoElement = localVideoElement;
-	patronusManager.startLocalVideo({width:traineeScreenWidth,height:traineeScreenHeight});
-	//WARNING user mediaの取得状況に注意 => 完全に取得できたイベントの後にやった方がよさそう
-	//patronusManager.requestConnectionForData(arg.peerId);
-	patronusManager.requestConnectionForStream(arg.peerId);
+	patronusManager.startLocalVideo({width:traineeScreenWidth,height:traineeScreenHeight},function(){
+		//WARNING user mediaの取得状況に注意 => 完全に取得できたイベントの後にやった方がよさそう
+		patronusManager.requestConnectionForData(arg.peerId);
+		patronusManager.requestConnectionForStream(arg.peerId);
 
+	});
 
 }
 

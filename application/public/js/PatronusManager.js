@@ -108,7 +108,7 @@ class PatronusManager{
 			//リモートのstreamの追加時に呼ばれる
 			console.log(stream);
 			//TODO リモートの設定
-			//this.startRemoteVideo(stream);
+			this.startRemoteVideo(stream);
 			self.onStreamAdded(stream);
 		});
 		call.on('close',()=>{
@@ -216,13 +216,16 @@ class PatronusManager{
 	 * [startLocalVideo ローカルストリームを取得し設定してあるエレメントに適応]
 	 * @return {[type]} [description]
 	 */
-	startLocalVideo(video_option=true){
+	startLocalVideo(video_option=true,callback=function(){}){
 		const self = this;
 		navigator.mediaDevices.getUserMedia({video:video_option,audio:true}).then(function(localstream){
 			//success navigator.getUserMedia
 			//console.log(localstream);
 			self.localStream = localstream;
 			self.localVideoElement.src = window.URL.createObjectURL(localstream);
+			self.localVideoElement.onloadedmetadata = function(){
+				callback();
+			};
 			self.localVideoElement.play();	
 		}).catch(function(e){
 			//error navigator.getUserMedia
@@ -239,7 +242,7 @@ class PatronusManager{
 	startRemoteVideo(stream){
 		//リモートが一つのみしか対応してない
 		this.remoteVideoElement.src = window.URL.createObjectURL(stream);
-		this.remoteVideoElement.play();
+		//this.remoteVideoElement.play();
 	}
 
 

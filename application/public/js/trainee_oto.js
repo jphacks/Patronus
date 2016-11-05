@@ -76,15 +76,14 @@ window.onload = function(e){
 	guiderCanvasElement.style.position="fixed";
 	guiderCanvasElement.style.zIndex = 1;
 
-	//document.body.appendChild(guiderVideoElement);
 	document.body.appendChild(guiderVideoCanvasElement);
 	document.body.appendChild(guiderCanvasElement);
 
-	guiderVideoElement.addEventListener('timeupdate',()=>{
+	setInterval(()=>{
 		//ここで画像処理をする
 		const guiderVideoCanvasElementContext = guiderVideoCanvasElement.getContext('2d');
-		guiderVideoCanvasElement.drawImage(guiderVideoElement, 0, 0, guiderVideoElement.width, guiderVideoElement.height); 
-	});
+		guiderVideoCanvasElementContext.drawImage(guiderVideoElement, 0, 0, guiderVideoElement.width, guiderVideoElement.height); 
+	},10);
 
 
 	patronusManager = new PatronusTraineeManager(SKYWAY_API_KEY);
