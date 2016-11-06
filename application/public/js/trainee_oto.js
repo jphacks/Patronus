@@ -121,10 +121,8 @@ class PatronusTraineeManager extends PatronusManager{
 			// call.answer(mediastream);
 			self.streamConnectionMap.set(call.peer,call);
 			self.initStreamConnectionEvents(call);
-			self.startLocalVideo({},function(){
 				call.answer(self.localStream);
 				self.onPeerCalled(call);
-			});
 		});	
 	}
 
@@ -196,9 +194,9 @@ window.onload = function(e){
 	patronusManager = new PatronusTraineeManager(SKYWAY_API_KEY);
 	patronusManager.setLocalVideoElement(localVideoElement);
 	patronusManager.setRemoteVideoElement(guiderVideoElement);
-	// patronusManager.startLocalVideo({},function(){
+	patronusManager.startLocalVideo({},function(){
 
-	// });
+	});
 	annotationModule = new AnnotationModule(guiderCanvasElement,false,patronusManager);
 }
 
