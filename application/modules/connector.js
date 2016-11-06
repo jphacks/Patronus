@@ -78,7 +78,6 @@ module.exports = class Connector {
                 if(this.childWindows[data.id] != null){ this.childWindows[data.id].close(); }
             });
             socket.on('move', (data) => {
-                console.log(this.childWindows[data.id])
                 this.childWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
             });
             socket.on('resize', (data) => {

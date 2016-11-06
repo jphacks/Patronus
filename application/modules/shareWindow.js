@@ -13,8 +13,7 @@ const ShareWindow = function(parentWindows, childWindows){
             height: 600,
             minWidth:100,
             minHeight: 50,
-            darkTheme: true,
-            alwaysOnTop: true
+            darkTheme: true
         });
         parentWindow.loadURL(url);
 

@@ -41,9 +41,10 @@ app.on('ready', (err) => {
             },
             {
                 label: 'New Share Window',
+                accelerator: 'Command+N',
                 click: (item, focusedWindow) => {
                     if(!role.role) {
-                        shareWindow.createParentwindow(`file://${__dirname}/public/test.html`, new Date().getTime(), connector);
+                        shareWindow.createParentWindow(`file://${__dirname}/public/test.html`, new Date().getTime(), connector.socket);
                     }
                 }
             },
