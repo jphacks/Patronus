@@ -1,0 +1,31 @@
+{
+  "name": "patronus_electron_application",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "./node_modules/.bin/electron index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jphacks/NG_1608.git"
+  },
+  "keywords": [
+    "jphacks"
+  ],
+  "author": [
+    "suzutomo@toralab.org",
+    "tatsuya-ohbe@live.jp",
+    "kyoshida@toralab.org"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "datauri": "^1.0.4",
+    "electron": "^1.4.4",
+    "electron-default-menu": "^1.0.0",
+    "express": "^4.14.0",
+    "screencapture": "^0.3.0",
+    "socket.io-client": "^1.5.1"
+  }
+}

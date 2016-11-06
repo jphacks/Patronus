@@ -1,15 +1,15 @@
 {
-  "name": "ng_1608",
+  "name": "patronus_server",
   "version": "0.1.0",
-  "description": "jphacks2016 名古屋8チームのプロダクト",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/.bin/electron index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git@sztm.github.com:jphacks/NG_1608.git"
+    "url": "https://github.com/jphacks/NG_1608.git"
   },
   "keywords": [
     "jphacks"
@@ -21,6 +21,7 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "electron": "^1.4.4"
+    "socket.io": "^1.5.1",
+    "uuid": "^2.0.3"
   }
 }
