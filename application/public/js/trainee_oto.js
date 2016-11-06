@@ -33,7 +33,7 @@ class PatronusTraineeManager extends PatronusManager{
 		console.log(data);
 		switch(data.act){
 			case 'draw_annotation' :
-				annotationModule.drawAnnotation(x,y);
+				annotationModule.drawAnnotation(data.data.x,data.data.y);
 			break;
 			case 'clear_canvas' :
 				annotationModule.clearCanvas();
