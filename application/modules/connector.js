@@ -95,6 +95,7 @@ module.exports = class Connector {
             /* guiderがページ遷移したときtraineeもページ遷移 */
             socket.on('updated', (data) => {
                 this.traineeShareWindows[data.id].loadURL(data.url);
+            });
             /**
              * video window edit by kyoshida
              */
