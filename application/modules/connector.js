@@ -72,8 +72,11 @@ module.exports = class Connector {
                 this.guiderShareWindows[data.id].loadURL(data.url);
             });
             /* guiderShareWindowが作られたときにtraineeShareWindowを作る */
-            socket.on('createWindow', (opt) => {
-                if(this.role.role != 'guider'){ this.ShareWindow.createTraineeShareWindow(opt); }
+            socket.on('createWindow', (data) => {
+                console.log(this.role.role);
+                console.log(opt);
+                this.guiderShareWindows[id] = data.guiderShareWindow;
+                if(this.role.role == 'trainee'){ this.ShareWindow.createTraineeShareWindow(data.opt); }
             });
             /* guiderがウィンドウを閉じるとtraineeも閉じる */
             socket.on('closeWindow', (data) => {

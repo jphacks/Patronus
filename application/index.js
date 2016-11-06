@@ -43,7 +43,7 @@ app.on('ready', (err) => {
                 label: 'New Share Window',
                 accelerator: 'Command+N',
                 click: (item, focusedWindow) => {
-                    if(!role.role) {
+                    if(role.role) {
                         ShareWindow.createGuiderShareWindow(`file://${__dirname}/public/test.html`, new Date().getTime(), connector.socket);
                     }
                 }

@@ -48,12 +48,12 @@ const ShareWindow = function(guiderShareWindows, traineeShareWindows){
             height: guiderShareWindow.getSize()[1],
             url: url
         }
-        socket.emit('createWindow', opt);
+        socket.emit('createWindow', {guider: guiderShareWindow, opt: opt});
 
         guiderShareWindows[id] = guiderShareWindow;
     }
 
-    function createTraineeShareWindow(opt){
+    function createTraineeShareWindow(opt, socket){
         let traineeShareWindow = new BrowserWindow({
             x: opt.x,
             y: opt.y,
@@ -67,6 +67,8 @@ const ShareWindow = function(guiderShareWindows, traineeShareWindows){
         traineeShareWindow.on('closed', () => {
             traineeShareWindow = null;
         });
+        socket.emit('createWindow', {guider: guiderShareWindow, opt: opt});
+
         traineeShareWindows[opt.id] = traineeShareWindow;
     }
 
