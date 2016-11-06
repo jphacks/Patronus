@@ -54,6 +54,7 @@ class PatronusManager{
 			// call.answer(mediastream);
 			self.streamConnectionMap.set(call.peer,call);
 			self.initStreamConnectionEvents(call);
+			console.log(self.localStream);
 			call.answer(self.localStream);
 			self.onPeerCalled(call);
 		});	
