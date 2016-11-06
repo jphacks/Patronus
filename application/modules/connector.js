@@ -17,7 +17,7 @@ module.exports = class Connector {
 
     connect() {
         if(!this.socket) {
-            this.socket = io('http://localhost:58100');
+            this.socket = io('http://192.168.90.39:58100');
         }
     }
 
@@ -89,6 +89,7 @@ module.exports = class Connector {
             });
             /* guiderがウィンドウを動かすとtraineeも動く */
             socket.on('move', (data) => {
+                console.log(this.traineeShareWindows[data.id])
                 if(this.traineeShareWindows[data.id]){
                     this.traineeShareWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
                 }
