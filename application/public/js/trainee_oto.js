@@ -30,6 +30,7 @@ class PatronusTraineeManager extends PatronusManager{
 	onDataConnectionReceived(data){
 		//ビデオサイズの交換？
 		//clickevent表記？
+		console.log(data);
 		switch(data.act){
 			case 'draw_annotation' :
 				annotationModule.drawAnnotation(x,y);
