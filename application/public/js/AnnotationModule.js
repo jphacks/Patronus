@@ -49,7 +49,7 @@ class AnnotationModule{
 			}
 			self.onUpforRemove = ev;
 			return ev;
-		}(self));
+		})(self));
 	}
 
 	removeMouseMoveUpEventListener(){
