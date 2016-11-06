@@ -104,7 +104,7 @@ class AnnotationModule{
 			console.log('ondown');
 			const clientX = e.clientX;
 			const clientY = e.clientY;
-			// self.drawAnnotation(clientX,clientY);
+		 	self.drawAnnotation(clientX,clientY);
 			self.sendDrawAnnotation(clientX,clientY);
 			self.setMouseMoveUpEventListener();
 		}		
@@ -115,13 +115,13 @@ class AnnotationModule{
 			const clientX = e.clientX;
 			const clientY = e.clientY;
 			self.sendDrawAnnotation(clientX,clientY);
-			//self.drawAnnotation(clientX,clientY);		
+			self.drawAnnotation(clientX,clientY);		
 		}
 
 		this.onUp = function(e){
 			console.log('onup');
 
-//			self.clearCanvas();	
+			self.clearCanvas();	
 			self.sendClearCanvas();
 			self.removeMouseMoveUpEventListener();					
 		}
