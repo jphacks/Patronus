@@ -20,7 +20,7 @@ module.exports = class Connector {
 
     connect() {
         if(!this.socket) {
-            this.socket = io('http://133.68.112.180:58100');
+            this.socket = io('http://192.168.90.39:58100');
         }
     }
 
@@ -77,8 +77,16 @@ module.exports = class Connector {
                 this.guiderShareWindows[data.id].loadURL(data.url);
             });
             /* guiderShareWindowが作られたときにtraineeShareWindowを作る */
-            socket.on('createWindow', (opt) => {
-                if(this.role.role != 'guider'){ this.ShareWindow.createTraineeShareWindow(opt); }
+            socket.on('createGuiderShareWindow', (data) => {
+                console.log(this.role.role);
+                console.log(data);
+                this.guiderShareWindows[data.opt.id] = data.guider;
+                if(this.role.role == 'trainee'){ this.ShareWindow.createTraineeShareWindow(data.opt, socket); }
+            });
+            socket.on('createTraineeShareWindow', (data) => {
+                console.log(this.role.role);
+                console.log(data);
+                this.traineeShareWindows[data.id] = data.trainee;
             });
             /* guiderがウィンドウを閉じるとtraineeも閉じる */
             socket.on('closeWindow', (data) => {
@@ -86,7 +94,10 @@ module.exports = class Connector {
             });
             /* guiderがウィンドウを動かすとtraineeも動く */
             socket.on('move', (data) => {
-                this.traineeShareWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
+                console.log(this.traineeShareWindows[data.id])
+                if(this.traineeShareWindows[data.id]){
+                    this.traineeShareWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
+                }
             });
             /* guiderがウィンドウをリサイズするとtraineeもリサイズ */
             socket.on('resize', (data) => {
@@ -94,7 +105,7 @@ module.exports = class Connector {
             });
             /* guiderがページ遷移したときtraineeもページ遷移 */
             socket.on('updated', (data) => {
-                this.traineeShareWindows[data.id].loadURL(data.url);
+                // this.traineeShareWindows[data.id].loadURL(data.url);
             });
             /**
              * video window edit by kyoshida
