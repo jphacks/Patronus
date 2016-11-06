@@ -184,7 +184,7 @@ window.onload = function(e){
 
 	document.body.appendChild(guiderVideoCanvasElement);
 	document.body.appendChild(guiderCanvasElement);
-	document.body.appendChild(localVideoElement);
+	//document.body.appendChild(localVideoElement);
 	setInterval(()=>{
 		//ここで画像処理をする
 		
