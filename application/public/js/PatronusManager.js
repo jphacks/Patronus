@@ -91,7 +91,7 @@ class PatronusManager{
 			});
 
 			self.onDataConnectionOpened(conn);
-		  //console.log('send hello');
+			console.log('send hello');
 		  //conn.send('Hello!');
 		});	
 	}
