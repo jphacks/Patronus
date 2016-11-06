@@ -46,20 +46,24 @@ class PatronusTraineeManager extends PatronusManager{
 		}
 	}
 
-	startLocalVideo(video_option=true,callback=function(){}){
+	startLocalVideo(callback=function(){}){
 		const self = this;
 		desktopCapturer.getSources({types:['window','screen']},(error,sources)=>{
-			if(error) throw error
-			for(let i =0; i<sources.length;++i){
-				if(sources[i].name == 'Electron'){
+			if(error){
+				console.log(error);
+			}
+			for(let i =0; i<sources.length;i++){
+				if(sources[i].name == 'Entire screen'){
 					navigator.webkitGetUserMedia({
-						audio: true,
+						audio: false,
 						video : {
 							mandatory: {
 								chromeMediaSource: 'desktop',
 								chromeMediaSourceId: sources[i].id,
-								width: screenWidth,
-								height: screenHeight
+								minWidth: screenWidth,
+					            maxWidth: screenWidth,
+					            minHeight: screenHeight,
+					            maxHeight: screenHeight
 							}
 						}
 					},function(stream){
@@ -71,6 +75,7 @@ class PatronusTraineeManager extends PatronusManager{
 						}
 						self.localVideoElement.play();
 					},function(error){
+						console.log(('error on startLocalVideo on trainee_oto.js'))
 						console.log(error);
 					});
 				}
@@ -196,8 +201,9 @@ window.onload = function(e){
 	patronusManager = new PatronusTraineeManager(SKYWAY_API_KEY);
 	patronusManager.setLocalVideoElement(localVideoElement);
 	patronusManager.setRemoteVideoElement(guiderVideoElement);
-	patronusManager.startLocalVideo({},function(){
 
+	patronusManager.startLocalVideo(function(){
+		console.log('start start');
 	});
 	annotationModule = new AnnotationModule(guiderCanvasElement,false,patronusManager);
 }
