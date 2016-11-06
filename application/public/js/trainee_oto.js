@@ -119,7 +119,7 @@ ipcRenderer.on('re_get_screenshot',(event,arg)=>{
 	//console.log(arg);
 	//url化必要そう
 	patronusManager.broadcastData2AllConnection({act:"sync_screenshot",img:arg});
-	setTimeout(loopGetScreenShotAndSync,2000);
+	setTimeout(loopGetScreenShotAndSync,500);
 });
 
 
