@@ -50,7 +50,7 @@ module.exports = {
         // Open the DevTools.
         videoWindow.webContents.openDevTools();
         if(role.role == 'trainee') {
-            videoWindow.setIgnoreMouseEvents(true);
+            //videoWindow.setIgnoreMouseEvents(true);
         }
 
         // Emitted when the window is closed.
