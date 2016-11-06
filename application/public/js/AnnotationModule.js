@@ -24,23 +24,38 @@ class AnnotationModule{
 		this.aImage.src = '../img/finger.png';
 
 	}
-
+	localCanvasElement.addEventListener('mousedown', function(e){
+		console.log('mousedown');
+	});
 	/*
 		event listener control method
 	 */
 	initMouseDownEventListener(){
 		const self = this;
-		this.canvas.addEventListener('mousedown', self.onDown);
+		this.canvas.addEventListener('mousedown', function(e){
+			self.onDown(e);
+		});
 	}
 
 	setMouseMoveUpEventListener(){
-		this.canvas.addEventListener('mousemove',self.onMove);
-		this.canvas.addEventListener('mouseup',self.onUp);
+		const self = this;
+		this.onMoveforRemove = (e)=>{
+			return function(e){
+				self.onMove(e);
+			}
+		}
+		this.onUpforRemove = (e)=>{
+			return function(e){
+				self.onUp(e);
+			}
+		}
+		this.canvas.addEventListener('mousemove',self.onMoveforRemove);
+		this.canvas.addEventListener('mouseup',self.onUpforRemove);
 	}
 
 	removeMouseMoveUpEventListener(){
-		this.canvas.removeEventListener('mousemove', self.onMove);
-		this.canvas.removeEventListener('mouseup',self.onUp);
+		this.canvas.removeEventListener('mousemove', self.onMoveforRemove);
+		this.canvas.removeEventListener('mouseup',self.onUpforRemove);
 	}
 
 	/*
