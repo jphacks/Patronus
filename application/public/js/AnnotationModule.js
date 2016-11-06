@@ -13,7 +13,7 @@ class AnnotationModule{
 		this.scale = 0.4;
 		this.aImage.onload = function(){
 			self.initMouseDownEventListener();
-			if(slef.sender){
+			if(self.sender){
 				console.log('sender');
 				self.setSenderEventMethod();
 			}else{
