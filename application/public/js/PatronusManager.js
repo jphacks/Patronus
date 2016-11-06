@@ -234,6 +234,7 @@ class PatronusManager{
 		});
 	}
 
+	
 	/**
 	 * [startRemoteVideo 設定してあるエレメントにリモートストリームを適応]
 	 * @param  {[type]} stream [description]
