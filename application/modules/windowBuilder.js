@@ -49,6 +49,8 @@ module.exports = {
         // mainWindow.webContents.openDevTools();
         if(role.role == 'trainee') {
             videoWindow.setIgnoreMouseEvents(true);
+        }else{
+            videoWindow.webContents.openDevTools();
         }
 
         // Emitted when the window is closed.
