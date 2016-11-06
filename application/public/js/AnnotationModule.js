@@ -47,7 +47,7 @@ class AnnotationModule{
 			const ev = function(e){
 				ac.onUp(e);
 			}
-			ac.onUpforRemove = ev;
+			self.onUpforRemove = ev;
 			return ev;
 		})(self));
 	}
@@ -121,7 +121,7 @@ class AnnotationModule{
 		this.onUp = function(e){
 			console.log('onup');
 
-			self.clearCanvas();	
+//			self.clearCanvas();	
 			self.sendClearCanvas();
 			self.removeMouseMoveUpEventListener();					
 		}
