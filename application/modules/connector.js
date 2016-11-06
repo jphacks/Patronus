@@ -137,6 +137,7 @@ module.exports = class Connector {
 
             ipcMain.on('sync_window_size',(event,arg)=>{
                 this.mainWindow.setSize(arg.width,arg.height);
+                this.mainWindow.center();
             });
         });
     }

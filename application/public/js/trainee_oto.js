@@ -203,7 +203,6 @@ window.onload = function(e){
 	patronusManager.setRemoteVideoElement(guiderVideoElement);
 
 	patronusManager.startLocalVideo(function(){
-		console.log('start start');
 	});
 	annotationModule = new AnnotationModule(guiderCanvasElement,false,patronusManager);
 }
