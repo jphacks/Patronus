@@ -67,22 +67,27 @@ module.exports = class Connector {
                 console.error('error', data.body);
             });
 
-
+            /* guiderが最初にURLを開いたときtraineeでも開く */
             ipcMain.on('openURL', (e, data) => {
                 this.guiderShareWindows[data.id].loadURL(data.url);
             });
+            /* guiderShareWindowが作られたときにtraineeShareWindowを作る */
             socket.on('createWindow', (opt) => {
                 if(this.role.role != 'guider'){ this.ShareWindow.createTraineeShareWindow(opt); }
             });
+            /* guiderがウィンドウを閉じるとtraineeも閉じる */
             socket.on('closeWindow', (data) => {
                 if(this.traineeShareWindows[data.id] != null){ this.traineeShareWindows[data.id].close(); }
             });
+            /* guiderがウィンドウを動かすとtraineeも動く */
             socket.on('move', (data) => {
                 this.traineeShareWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
             });
+            /* guiderがウィンドウをリサイズするとtraineeもリサイズ */
             socket.on('resize', (data) => {
                 this.traineeShareWindows[data.id].setSize(data.size[0], data.size[1], true);
             });
+            /* guiderがページ遷移したときtraineeもページ遷移 */
             socket.on('updated', (data) => {
                 this.traineeShareWindows[data.id].loadURL(data.url);
             });

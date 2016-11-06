@@ -33,14 +33,13 @@ const ShareWindow = function(guiderShareWindows, traineeShareWindows){
             socket.emit('updated', {id: id, url: url});
         })
 
-        // setTimeout(() => {
-        //     guiderShareWindow.webContents.send('set-id', id);
-        // },2000);
+        // Renderの読み込みが完了するとidを要請してくるので送る
         ipcMain.on('get-id', (event, arg) => {
           event.sender.send('set-id', id)
         });
-        guiderShareWindow.webContents.openDevTools();
+        // guiderShareWindow.webContents.openDevTools();
 
+        // trainee側に送るguiderShareウィンドウの情報
         const opt = {
             id: id,
             x: guiderShareWindow.getPosition()[0],
@@ -54,8 +53,7 @@ const ShareWindow = function(guiderShareWindows, traineeShareWindows){
         guiderShareWindows[id] = guiderShareWindow;
     }
 
-    function createTraineeShareWindow(opt, socket){
-        // console.log(opt);
+    function createTraineeShareWindow(opt){
         let traineeShareWindow = new BrowserWindow({
             x: opt.x,
             y: opt.y,
@@ -69,7 +67,6 @@ const ShareWindow = function(guiderShareWindows, traineeShareWindows){
         traineeShareWindow.on('closed', () => {
             traineeShareWindow = null;
         });
-        traineeShareWindow.id = opt.id;
         traineeShareWindows[opt.id] = traineeShareWindow;
     }
 
