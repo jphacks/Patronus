@@ -3,17 +3,9 @@
 const path = require('path');
 const socketio = require('socket.io');
 const RoomManager = require(path.join(__dirname, 'modules', 'roommanager.js'));
-const express = require('express');
-
-const app = express();
 
 const io = socketio.listen(58100);
 const room_manager = new RoomManager();
-
-
-app.use(express.static(path.join(__dirname, '..', 'application', 'public')));
-
-app.listen(58101);
 
 
 io.sockets.on("connection", (socket) => {
