@@ -58,6 +58,7 @@ module.exports = class Connector {
             /* 部屋への入室 */
             socket.on('join_room', (data) => {
                 this.role.joined = true;
+                this.role.room = data.body;
                 console.log('join_room: ', data.body, ', as: ', this.role.role);
                 this.mainWindow.webContents.send('join_room', data);
                 this.mainWindow.close();
@@ -113,6 +114,7 @@ module.exports = class Connector {
                 //TODO
                 //socket.ioでguiderのmainにdataオブジェクトを渡す
                 // socket.send? 'create_guider_window'
+                data.room = this.role.room;
                 console.log('create guider window from browser: ', data);
                 socket.emit('create_guider_window', data);
             });
@@ -127,8 +129,10 @@ module.exports = class Connector {
                 //TODO
                 //guiderのmainプロセス
                 //window生成 -> ウィンドウロードイベント -> window.webContents.send('connect_trainee',data);
-                console.log('create guider window from socket: ', data);
-                this.mainWindow.webContents.send('create_guider_window', data);
+                if(this.role.role == 'guider') {
+                    console.log('create guider window from socket: ', data);
+                    this.mainWindow.webContents.send('create_guider_window', data);
+                }
             });
         });
     }
