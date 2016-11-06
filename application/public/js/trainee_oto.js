@@ -5,6 +5,7 @@ var screenWidth = null;
 var screenHeight = null;
 var patronusManager = null;
 var guiderVideoElement = null;
+var localVideoElement = null
 var guiderCanvasElement = null;
 var guiderVideoCanvasElement = null;
 var annotationModule = null;
