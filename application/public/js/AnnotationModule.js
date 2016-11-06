@@ -45,17 +45,20 @@ class AnnotationModule{
 		draw method
 	 */
 	drawAnnotation(x,y){
+		console.log('draw');
 		const context = this.canvas.getContext('2d');
 		context.clearRect(0,0,this.canvas.width,this.canvas.height);
 		context.drawImage(this.aImage,0,0,this.aImage.width,this.aImage.height,x,y,this.aImage.width*this.scale,this.aImage.height*this.scale);
 	}
 
 	clearCanvas(){
+		console.log('clear');
 		const context = this.canvas.getContext('2d');
 		context.clearRect(0,0,this.canvas.width,this.canvas.height);
 	}
 
 	sendDrawAnnotation(x,y){
+		console.log('send draw');
 		this.patronus.broadcastData2AllConnection({
 			act:'draw_annotation',
 			data:{
@@ -66,6 +69,7 @@ class AnnotationModule{
 	}
 
 	sendClearCanvas(){
+		console.log('send clear');
 		this.patronus.broadcastData2AllConnection({
 			act:'clear_canvas',
 			data:{}
@@ -79,6 +83,7 @@ class AnnotationModule{
 	setSenderEventMethod(){
 		var self = this;
 		this.onDown = function(e){
+			console.log('ondown');
 			const clientX = e.clientX;
 			const clientY = e.clientY;
 			// self.drawAnnotation(clientX,clientY);
@@ -86,13 +91,18 @@ class AnnotationModule{
 		}		
 	
 		this.onMove = function(e){
+			console.log('onmove');
+
 			const clientX = e.clientX;
 			const clientY = e.clientY;
 			self.drawAnnotation(clientX,clientY);		
 		}
 
 		this.onUp = function(e){
-			self.clearCanvas();						
+			console.log('onup');
+
+			self.clearCanvas();	
+			self.removeMouseMoveUpEventListener();					
 		}
 	}
 
