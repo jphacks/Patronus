@@ -74,6 +74,10 @@ ipcRenderer.on('connect_trainee',(event,arg)=>{
 	localCanvasElement.style.position = "fixed";
 	localCanvasElement.style.zIndex = 1;
 
+	localCanvasElement.addEventListener('mousedown', function(e){
+		console.log('mousedown');
+	});
+
 	remoteImageCanvasElement.width = traineeScreenWidth;
 	remoteImageCanvasElement.height = traineeScreenHeight;
 	remoteImageCanvasElement.style.width = traineeScreenWidth+"px";
