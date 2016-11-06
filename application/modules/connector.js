@@ -94,7 +94,6 @@ module.exports = class Connector {
                                 if(err){
                                     console.log(err);
                                 }else{
-
                                 }
                             });
                         });

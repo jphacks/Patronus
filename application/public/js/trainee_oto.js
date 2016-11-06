@@ -23,7 +23,7 @@ class PatronusTraineeManager extends PatronusManager{
 		ipcRenderer.send('create_guider_window',{peerId:id,width:screenWidth,height:screenHeight});
 	}
 
-	onDataConnectionOpend(conn){
+	onDataConnectionOpened(conn){
 		loopGetScreenShotAndSync();
 	}
 
@@ -77,9 +77,10 @@ window.onload = function(e){
 	guiderVideoCanvasElement.height = screenHeight;
 	guiderVideoCanvasElement.style.width = String(screenWidth)+'px';
 	guiderVideoCanvasElement.style.height = String(screenHeight)+'px';
-	guiderVideoCanvasElement.style.backgroundColor = 'rgba(0,0,0,0)'
+	guiderVideoCanvasElement.style.backgroundColor = 'rgba(0,0,0,0)';
 	guiderVideoCanvasElement.id = 'remote_video_canvas';
 	guiderVideoCanvasElement.style.position="fixed";
+	guiderVideoCanvasElement.style.opacity = 0.5;
 	guiderVideoCanvasElement.style.zIndex = 0;
 
 	guiderCanvasElement.width = screenWidth;
@@ -96,6 +97,7 @@ window.onload = function(e){
 
 	setInterval(()=>{
 		//ここで画像処理をする
+		
 		const guiderVideoCanvasElementContext = guiderVideoCanvasElement.getContext('2d');
 		guiderVideoCanvasElementContext.drawImage(guiderVideoElement, 0, 0, guiderVideoElement.width, guiderVideoElement.height); 
 	},10);
@@ -108,12 +110,12 @@ window.onload = function(e){
 
 
 function loopGetScreenShotAndSync(){
-	ipcRenderer.send('get_screenshot',{})
+	ipcRenderer.send('get_screenshot',{am:"am"});
 }
 
 
 ipcRenderer.on('re_get_screenshot',(event,arg)=>{
-	console.log(arg);
+	//console.log(arg);
 	//url化必要そう
 	patronusManager.broadcastData2AllConnection({act:"sync_screenshot",img:arg});
 	setTimeout(loopGetScreenShotAndSync,1000);
