@@ -71,6 +71,7 @@ class PatronusTraineeManager extends PatronusManager{
 						self.localstream = stream;
 						self.localVideoElement.src = window.URL.createObjectURL(stream);
 						self.localVideoElement.onloadedmetadata = function(){
+							console.log('callback');
 							callback();
 						}
 						self.localVideoElement.play();
@@ -129,7 +130,9 @@ class PatronusTraineeManager extends PatronusManager{
 			self.streamConnectionMap.set(call.peer,call);
 			self.initStreamConnectionEvents(call);
 			patronusManager.startLocalVideo(function(){
-				call.answer(self.localStream);
+				console.log('answer');
+				console.log(self.localstream);
+				call.answer(self.localstream);
 				self.onPeerCalled(call);
 	
 			});

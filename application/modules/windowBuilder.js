@@ -48,9 +48,9 @@ module.exports = {
         videoWindow.loadURL(`http://127.0.0.1:58101/${role.role}_oto.html`);
 
         // Open the DevTools.
-        videoWindow.webContents.openDevTools();
+        //videoWindow.webContents.openDevTools();
         if(role.role == 'trainee') {
-            //videoWindow.setIgnoreMouseEvents(true);
+            videoWindow.setIgnoreMouseEvents(true);
         }
 
         // Emitted when the window is closed.
