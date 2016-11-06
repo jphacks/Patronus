@@ -2,7 +2,7 @@ const ipcMain = require('electron').ipcMain;
 const BrowserWindow = require('electron').BrowserWindow;
 
 
-const ShareWindow = function(guiderShareWindows, traineeShareWindows){
+const ShareWindow = function(ShareWindows){
 
     function createGuiderShareWindow(url, id, socket){
         let guiderShareWindow = new BrowserWindow({
@@ -49,7 +49,7 @@ const ShareWindow = function(guiderShareWindows, traineeShareWindows){
         }
         socket.emit('createGuiderShareWindow', {guider: guiderShareWindow, opt: opt});
 
-        guiderShareWindows[id] = guiderShareWindow;
+        ShareWindows[id] = guiderShareWindow;
     }
 
     function createTraineeShareWindow(opt, socket){
@@ -68,7 +68,7 @@ const ShareWindow = function(guiderShareWindows, traineeShareWindows){
         });
         socket.emit('createTraineeShareWindow', {trainee: traineeShareWindow, id: opt.id});
 
-        traineeShareWindows[opt.id] = traineeShareWindow;
+        ShareWindows[opt.id] = traineeShareWindow;
     }
 
     return{

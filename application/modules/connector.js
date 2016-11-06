@@ -4,11 +4,10 @@ const ipcMain = require('electron').ipcMain;
 const io = require('socket.io-client');
 
 module.exports = class Connector {
-    constructor(mainWindow, guiderShareWindows, traineeShareWindows, role, ShareWindow) {
+    constructor(mainWindow, ShareWindows, role, ShareWindow) {
         this.socket = null;
         this.mainWindow = mainWindow;
-        this.guiderShareWindows = guiderShareWindows;
-        this.traineeShareWindows = traineeShareWindows;
+        this.ShareWindows = ShareWindows;
         this.role = role;
         this.ShareWindow = ShareWindow;
         this.connect();
@@ -69,38 +68,40 @@ module.exports = class Connector {
 
             /* guiderが最初にURLを開いたときtraineeでも開く */
             ipcMain.on('openURL', (e, data) => {
-                this.guiderShareWindows[data.id].loadURL(data.url);
+                if(this.role.role == 'guider'){}
+                this.ShareWindows[data.id].loadURL(data.url);
+        }
             });
             /* guiderShareWindowが作られたときにtraineeShareWindowを作る */
             socket.on('createGuiderShareWindow', (data) => {
                 console.log(this.role.role);
                 console.log(data);
-                this.guiderShareWindows[data.opt.id] = data.guider;
+                this.ShareWindows[data.opt.id] = data.guider;
                 if(this.role.role == 'trainee'){ this.ShareWindow.createTraineeShareWindow(data.opt, socket); }
             });
             socket.on('createTraineeShareWindow', (data) => {
                 console.log(this.role.role);
                 console.log(data);
-                this.traineeShareWindows[data.id] = data.trainee;
+                this.ShareWindows[data.id] = data.trainee;
             });
             /* guiderがウィンドウを閉じるとtraineeも閉じる */
             socket.on('closeWindow', (data) => {
-                if(this.traineeShareWindows[data.id] != null){ this.traineeShareWindows[data.id].close(); }
+                // if(this.traineeShareWindows[data.id] != null){ this.traineeShareWindows[data.id].close(); }
             });
             /* guiderがウィンドウを動かすとtraineeも動く */
             socket.on('move', (data) => {
                 console.log(this.traineeShareWindows[data.id])
-                if(this.traineeShareWindows[data.id]){
-                    this.traineeShareWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
+                if(this.ShareWindows[data.id]){
+                    this.ShareWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
                 }
             });
             /* guiderがウィンドウをリサイズするとtraineeもリサイズ */
             socket.on('resize', (data) => {
-                this.traineeShareWindows[data.id].setSize(data.size[0], data.size[1], true);
+                this.ShareWindows[data.id].setSize(data.size[0], data.size[1], true);
             });
             /* guiderがページ遷移したときtraineeもページ遷移 */
             socket.on('updated', (data) => {
-                // this.traineeShareWindows[data.id].loadURL(data.url);
+                this.ShareWindows[data.id].loadURL(data.url);
             });
         });
     }
