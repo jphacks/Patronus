@@ -42,7 +42,7 @@ class AnnotationModule{
 			};
 			ac.onMoveForRemove = ev
 			return ev;
-		})(self);
+		})(self));
 		this.canvas.addEventListener('mouseup',(function(ac){
 			const ev = function(e){
 				ac.onUp(e);
