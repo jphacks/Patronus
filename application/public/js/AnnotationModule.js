@@ -24,9 +24,6 @@ class AnnotationModule{
 		this.aImage.src = '../img/finger.png';
 
 	}
-	localCanvasElement.addEventListener('mousedown', function(e){
-		console.log('mousedown');
-	});
 	/*
 		event listener control method
 	 */
