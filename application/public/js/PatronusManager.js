@@ -107,9 +107,9 @@ class PatronusManager{
 		console.log(call);
 		call.on('stream',(stream)=>{
 			//リモートのstreamの追加時に呼ばれる
+			console.log('on stream');
 			console.log(stream);
-			//TODO リモートの設定
-			this.startRemoteVideo(stream);
+			self.startRemoteVideo(stream);
 			self.onStreamAdded(stream);
 		});
 		call.on('close',()=>{
