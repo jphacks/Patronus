@@ -41,8 +41,7 @@ module.exports = {
         });
 
         // and load the index.html of the app.
-        videoWindow.loadURL(`file://${__dirname}/../public/index.html`);
-        // videoWindow.loadURL(`file://${__dirname}/../public/${role.role}_oto.html`);
+        videoWindow.loadURL(`file://${__dirname}/../public/${role.role}_oto.html`);
 
         // Open the DevTools.
         // mainWindow.webContents.openDevTools();
