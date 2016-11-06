@@ -19,7 +19,7 @@ class PatronusGuiderManager extends PatronusManager{
 	/*
 		override
 	 */
-	 onDataReceived(data){
+	 onDataConnectionReceived(data){
 	 	console.log(data.act);
 	 	switch(data.act){
 	 		case 'sync_screenshot' :

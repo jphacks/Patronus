@@ -27,7 +27,7 @@ class PatronusTraineeManager extends PatronusManager{
 		loopGetScreenShotAndSync();
 	}
 
-	onDataReceived(data){
+	onDataConnectionReceived(data){
 		//ビデオサイズの交換？
 		//clickevent表記？
 		switch(data.act){
