@@ -2,10 +2,10 @@ const ipcMain = require('electron').ipcMain;
 const BrowserWindow = require('electron').BrowserWindow;
 
 
-const ShareWindow = function(parentWindows, childWindows){
+const ShareWindow = function(guiderShareWindows, traineeShareWindows){
 
-    function createParentWindow(url, id, socket){
-        let parentWindow = new BrowserWindow({
+    function createGuiderShareWindow(url, id, socket){
+        let guiderShareWindow = new BrowserWindow({
             // parent: mainWindow,
             x: 0,
             y: 0,
@@ -15,48 +15,48 @@ const ShareWindow = function(parentWindows, childWindows){
             minHeight: 50,
             darkTheme: true
         });
-        parentWindow.loadURL(url);
+        guiderShareWindow.loadURL(url);
 
-        parentWindow.on('closed', () => {
+        guiderShareWindow.on('closed', () => {
             socket.emit('closeWindow', {id: id});
-            parentWindow = null;
+            guiderShareWindow = null;
         });
-        parentWindow.on('move', () => {
-            socket.emit('move', {id: id, pos: parentWindow.getPosition()});
+        guiderShareWindow.on('move', () => {
+            socket.emit('move', {id: id, pos: guiderShareWindow.getPosition()});
         });
-        parentWindow.on('resize', () => {
-            socket.emit('resize', {id: id, size: parentWindow.getSize()});
+        guiderShareWindow.on('resize', () => {
+            socket.emit('resize', {id: id, size: guiderShareWindow.getSize()});
         });
-        parentWindow.on('page-title-updated', (e, title) => {
-            const url = parentWindow.webContents.getURL();
+        guiderShareWindow.on('page-title-updated', (e, title) => {
+            const url = guiderShareWindow.webContents.getURL();
             console.log(url)
             socket.emit('updated', {id: id, url: url});
         })
 
         // setTimeout(() => {
-        //     parentWindow.webContents.send('set-id', id);
+        //     guiderShareWindow.webContents.send('set-id', id);
         // },2000);
         ipcMain.on('get-id', (event, arg) => {
           event.sender.send('set-id', id)
         });
-        parentWindow.webContents.openDevTools();
+        guiderShareWindow.webContents.openDevTools();
 
         const opt = {
             id: id,
-            x: parentWindow.getPosition()[0],
-            y: parentWindow.getPosition()[1],
-            width: parentWindow.getSize()[0],
-            height: parentWindow.getSize()[1],
+            x: guiderShareWindow.getPosition()[0],
+            y: guiderShareWindow.getPosition()[1],
+            width: guiderShareWindow.getSize()[0],
+            height: guiderShareWindow.getSize()[1],
             url: url
         }
         socket.emit('createWindow', opt);
 
-        parentWindows[id] = parentWindow;
+        guiderShareWindows[id] = guiderShareWindow;
     }
 
-    function createChildWindow(opt, socket){
+    function createTraineeShareWindow(opt, socket){
         // console.log(opt);
-        let childWindow = new BrowserWindow({
+        let traineeShareWindow = new BrowserWindow({
             x: opt.x,
             y: opt.y,
             width: opt.width,
@@ -65,17 +65,17 @@ const ShareWindow = function(parentWindows, childWindows){
             movable: false,
             resizable: false
         });
-        childWindow.loadURL(opt.url);
-        childWindow.on('closed', () => {
-            childWindow = null;
+        traineeShareWindow.loadURL(opt.url);
+        traineeShareWindow.on('closed', () => {
+            traineeShareWindow = null;
         });
-        childWindow.id = opt.id;
-        childWindows[opt.id] = childWindow;
+        traineeShareWindow.id = opt.id;
+        traineeShareWindows[opt.id] = traineeShareWindow;
     }
 
     return{
-        createParentWindow: createParentWindow,
-        createChildWindow: createChildWindow
+        createGuiderShareWindow: createGuiderShareWindow,
+        createTraineeShareWindow: createTraineeShareWindow
     }
 
 };

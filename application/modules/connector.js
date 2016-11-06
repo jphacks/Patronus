@@ -4,13 +4,13 @@ const ipcMain = require('electron').ipcMain;
 const io = require('socket.io-client');
 
 module.exports = class Connector {
-    constructor(mainWindow, parentWindows, childWindows, role, shareWindow) {
+    constructor(mainWindow, guiderShareWindows, traineeShareWindows, role, ShareWindow) {
         this.socket = null;
         this.mainWindow = mainWindow;
-        this.parentWindows = parentWindows;
-        this.childWindows = childWindows;
+        this.guiderShareWindows = guiderShareWindows;
+        this.traineeShareWindows = traineeShareWindows;
         this.role = role;
-        this.shareWindow = shareWindow;
+        this.ShareWindow = ShareWindow;
         this.connect();
         this.setListener();
     }
@@ -69,22 +69,22 @@ module.exports = class Connector {
 
 
             ipcMain.on('openURL', (e, data) => {
-                this.parentWindows[data.id].loadURL(data.url);
+                this.guiderShareWindows[data.id].loadURL(data.url);
             });
             socket.on('createWindow', (opt) => {
-                if(this.role.role != 'guider'){ this.shareWindow.createChildWindow(opt); }
+                if(this.role.role != 'guider'){ this.ShareWindow.createTraineeShareWindow(opt); }
             });
             socket.on('closeWindow', (data) => {
-                if(this.childWindows[data.id] != null){ this.childWindows[data.id].close(); }
+                if(this.traineeShareWindows[data.id] != null){ this.traineeShareWindows[data.id].close(); }
             });
             socket.on('move', (data) => {
-                this.childWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
+                this.traineeShareWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
             });
             socket.on('resize', (data) => {
-                this.childWindows[data.id].setSize(data.size[0], data.size[1], true);
+                this.traineeShareWindows[data.id].setSize(data.size[0], data.size[1], true);
             });
             socket.on('updated', (data) => {
-                this.childWindows[data.id].loadURL(data.url);
+                this.traineeShareWindows[data.id].loadURL(data.url);
             });
         });
     }
