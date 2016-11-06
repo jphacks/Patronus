@@ -8,6 +8,10 @@ const { app, BrowserWindow, Menu, shell } = electron;
 
 const Connector = require('./modules/connector.js');
 
+let guiderShareWindows = {};
+let traineeShareWindows = {};
+const ShareWindow = require('./modules/shareWindow.js')(guiderShareWindows, traineeShareWindows);
+
 const window_builder = require(path.join(__dirname, 'modules', 'windowBuilder.js'));
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -37,9 +41,10 @@ app.on('ready', (err) => {
             },
             {
                 label: 'New Share Window',
+                accelerator: 'Command+N',
                 click: (item, focusedWindow) => {
                     if(!role.role) {
-                        // TODO
+                        ShareWindow.createGuiderShareWindow(`file://${__dirname}/public/test.html`, new Date().getTime(), connector.socket);
                     }
                 }
             },
@@ -51,7 +56,8 @@ app.on('ready', (err) => {
 
     mainWindow = window_builder.createMainWindow(windowCloser);
 
-    connector = new Connector(mainWindow, role);
+    connector = new Connector(mainWindow, guiderShareWindows, traineeShareWindows, role, ShareWindow);
+
 });
 
 // Quit when all windows are closed.

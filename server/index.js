@@ -30,4 +30,23 @@ io.sockets.on("connection", (socket) => {
             socket.emit('error_message', {body: 'there is no room with your token'});
         }
     });
+
+    socket.on('createWindow', (data) => {
+    io.emit('createWindow', data);
+    });
+    socket.on('closeWindow', (data) => {
+    io.emit('closeWindow', data);
+    });
+    socket.on('move', (data) => {
+    io.emit('move', data);
+    });
+    socket.on('resize', (data) => {
+    io.emit('resize', data);
+    });
+    socket.on('updated', (data) => {
+    io.emit('updated', data);
+    });
+    socket.on('scroll', (data) => {
+    io.emit('scroll', data);
+    });
 });
