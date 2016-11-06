@@ -22,6 +22,7 @@
   "license": "ISC",
   "dependencies": {
     "electron": "^1.4.4",
+    "electron-default-menu": "^1.0.0",
     "socket.io-client": "^1.5.1"
   }
 }
