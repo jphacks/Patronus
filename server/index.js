@@ -32,8 +32,13 @@ io.sockets.on("connection", (socket) => {
         }
     });
 
-    socket.on('createWindow', (data) => {
-    io.emit('createWindow', data);
+    socket.on('createGuiderShareWindow', (data) => {
+        console.log(data)
+    io.emit('createGuiderShareWindow', data);
+    });
+    socket.on('createTraineeShareWindow', (data) => {
+        console.log(data)
+    io.emit('createTraineeShareWindow', data);
     });
     socket.on('closeWindow', (data) => {
     io.emit('closeWindow', data);
