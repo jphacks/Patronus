@@ -12,6 +12,7 @@ class AnnotationModule{
 		this.aImage = new Image();
 		this.scale = 0.4;
 		this.aImage.onload = function(){
+			
 			self.initMouseDownEventListener();
 			if(self.sender){
 				console.log('sender');
@@ -88,6 +89,7 @@ class AnnotationModule{
 			const clientX = e.clientX;
 			const clientY = e.clientY;
 			// self.drawAnnotation(clientX,clientY);
+			self.sendDrawAnnotation(clientX,clientY);
 			self.setMouseMoveUpEventListener();
 		}		
 	
@@ -96,13 +98,15 @@ class AnnotationModule{
 
 			const clientX = e.clientX;
 			const clientY = e.clientY;
-			self.drawAnnotation(clientX,clientY);		
+			self.sendDrawAnnotation(clientX,clientY);
+			//self.drawAnnotation(clientX,clientY);		
 		}
 
 		this.onUp = function(e){
 			console.log('onup');
 
 			self.clearCanvas();	
+			self.sendClearCanvas();
 			self.removeMouseMoveUpEventListener();					
 		}
 	}
