@@ -15,12 +15,12 @@ module.exports = {
 
         // and load the index.html of the app.
         // mainWindow.loadURL(`file://${__dirname}/../public/index.html`);
-        //mainWindow.loadURL('http://127.0.0.1:58101');
+        mainWindow.loadURL('http://127.0.0.1:58101');
 
-        mainWindow.loadURL('http://127.0.0.1:58101/trainee_oto.html');
+        //mainWindow.loadURL('http://127.0.0.1:58101/trainee_oto.html');
 
         // Open the DevTools.
-         mainWindow.webContents.openDevTools();
+        // mainWindow.webContents.openDevTools();
 
         // Emitted when the window is closed.
         mainWindow.on('closed', closer);
