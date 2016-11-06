@@ -24,10 +24,14 @@ class PatronusGuiderManager extends PatronusManager{
 	 	switch(data.act){
 	 		case 'sync_screenshot' :
 	 			//.imgはurl
-	 
-	 			const remoteImageContext = remoteImageCanvasElement.getContext('2d');
-	 			remoteImageContext.drawImage(data.img,0,0,remoteImageCanvasElement.width,remoteImageCanvasElement.height);
-	 		break;
+	 			console.log('case sync');
+	 			const img = new Image();
+	 			img.onload = function(){
+	 				const remoteImageContext = remoteImageCanvasElement.getContext('2d');
+	 				remoteImageContext.drawImage(img,0,0,remoteImageCanvasElement.width,remoteImageCanvasElement.height);
+	 			}
+	 			img.src = data.img;
+	 			break;
 	 		default :
 	 			console.log('can not find such a act onDataReceived');
 	 			//console.log(data);
