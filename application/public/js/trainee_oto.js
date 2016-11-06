@@ -1,6 +1,6 @@
 'use strict'
 
-const {ipcRenderer} = require('electron');
+const {ipcRenderer,desktopCapturer} = require('electron');
 var screenWidth = null;
 var screenHeight = null;
 var patronusManager = null;
@@ -45,8 +45,87 @@ class PatronusTraineeManager extends PatronusManager{
 		}
 	}
 
+	startLocalVideo(video_option=true,callback=function(){}){
+		const self = this;
+		desktopCapturer.getSources({types:['window','screen']},(error,sources)=>{
+			if(error) throw error
+			for(let i =0; i<sources.length;++i){
+				if(sources[i].name == 'Electron'){
+					navigator.webkitGetUserMedia({
+						audio: true,
+						video : {
+							mandatory: {
+								chromeMediaSource: 'desktop',
+								chromeMediaSourceId: sources[i].id,
+								width: screenWidth,
+								height: screenHeight
+							}
+						}
+					},function(stream){
+						self.localstream = stream;
+						self.localVideoElement.src = window.URL.createObjectURL(stream);
+						self.localVideoElement.onloadedmetadata = function(){
+							callback();
+						}
+						self.localVideoElement.play();
+					},function(error){
+						console.log(error);
+					});
+				}
+			}
+		});
+	}
+
 	onStreamAdded(stream){
 		this.startRemoteVideo(stream);
+	}
+
+	initPeerEventListener(){
+		const self = this;
+		this.peer.on('open',(id)=>{
+			self.peerId = id;
+			console.log(id);
+			//startVideo();
+			self.setOnWindowCloseEvent();
+			self.onPeerOpened(id);
+		});
+		//	startVideo();
+
+		this.peer.on('close',function(){
+			self.peer.destroy();
+			self.onPeerClosed();
+		});
+
+
+		/**
+		 * [description] data用のコネクション要求が呼ばれた時のイベント
+		 * @param  {[type]} conn){	console.log(conn);	connectedMap.set(conn.peer,conn);	requestConnectionForData(conn);} [description]
+		 * @return {[type]}                                                                                                [description]
+		 */
+		this.peer.on('connection',(conn)=>{
+			console.log(conn);
+			self.dataConnectionMap.set(conn.peer,conn);
+			self.initDataConnectionEvents(conn);
+			self.onPeerConnected(conn);
+			//requestConnectionForData(conn);
+		});
+
+
+		/**
+		 * [description] stream用のコネクション要求が呼ばれた時のイベント
+		 * @param  {[type]} conn){} [description]
+		 * @return {[type]}           [description]
+		 */
+		this.peer.on('call',(call)=>{
+			console.log(call);
+			// call.answer(mediastream);
+			self.streamConnectionMap.set(call.peer,call);
+			self.initStreamConnectionEvents(call);
+			self.startLocalVideo({},function(){
+				call.answer(self.localStream);
+				self.onPeerCalled(call);
+			});
+		});	
 	}
 
 
@@ -62,6 +141,7 @@ window.onload = function(e){
 	screenHeight = window.parent.screen.height;
 
 	guiderVideoElement = document.createElement('video');
+	localVideoElement = document.createElement('video');
 	guiderVideoCanvasElement = document.createElement('canvas');
 	guiderCanvasElement = document.createElement('canvas');
 
@@ -73,6 +153,15 @@ window.onload = function(e){
 	guiderVideoElement.id = 'remote_video';
 	guiderVideoElement.style.position="fixed";
 	guiderVideoElement.style.zIndex = 0;
+
+	localVideoElement.width = screenWidth;
+	localVideoElement.height = screenHeight;
+	localVideoElement.style.width = String(screenWidth)+'px';
+	localVideoElement.style.height = String(screenHeight)+'px';
+	localVideoElement.style.backgroundColor = 'rgba(0,0,0,0)'
+	localVideoElement.id = 'local_video';
+	localVideoElement.style.position="fixed";
+	localVideoElement.style.zIndex = 0;
 
 	guiderVideoCanvasElement.width = screenWidth;
 	guiderVideoCanvasElement.height = screenHeight;
@@ -105,7 +194,11 @@ window.onload = function(e){
 
 
 	patronusManager = new PatronusTraineeManager(SKYWAY_API_KEY);
+	patronusManager.setLocalVideoElement(localVideoElement);
 	patronusManager.setRemoteVideoElement(guiderVideoElement);
+	// patronusManager.startLocalVideo({},function(){
+
+	// });
 	annotationModule = new AnnotationModule(guiderCanvasElement,false,patronusManager);
 }
 
