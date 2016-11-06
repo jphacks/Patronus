@@ -72,11 +72,16 @@ module.exports = class Connector {
                 this.guiderShareWindows[data.id].loadURL(data.url);
             });
             /* guiderShareWindowが作られたときにtraineeShareWindowを作る */
-            socket.on('createWindow', (data) => {
+            socket.on('createGuiderShareWindow', (data) => {
                 console.log(this.role.role);
-                console.log(opt);
-                this.guiderShareWindows[id] = data.guiderShareWindow;
-                if(this.role.role == 'trainee'){ this.ShareWindow.createTraineeShareWindow(data.opt); }
+                console.log(data);
+                this.guiderShareWindows[data.opt.id] = data.guider;
+                if(this.role.role == 'trainee'){ this.ShareWindow.createTraineeShareWindow(data.opt, socket); }
+            });
+            socket.on('createTraineeShareWindow', (data) => {
+                console.log(this.role.role);
+                console.log(data);
+                this.traineeShareWindows[data.id] = data.trainee;
             });
             /* guiderがウィンドウを閉じるとtraineeも閉じる */
             socket.on('closeWindow', (data) => {
@@ -84,7 +89,9 @@ module.exports = class Connector {
             });
             /* guiderがウィンドウを動かすとtraineeも動く */
             socket.on('move', (data) => {
-                this.traineeShareWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
+                if(this.traineeShareWindows[data.id]){
+                    this.traineeShareWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
+                }
             });
             /* guiderがウィンドウをリサイズするとtraineeもリサイズ */
             socket.on('resize', (data) => {
@@ -92,7 +99,7 @@ module.exports = class Connector {
             });
             /* guiderがページ遷移したときtraineeもページ遷移 */
             socket.on('updated', (data) => {
-                this.traineeShareWindows[data.id].loadURL(data.url);
+                // this.traineeShareWindows[data.id].loadURL(data.url);
             });
         });
     }

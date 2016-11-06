@@ -26,6 +26,11 @@ let connector = null;
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', (err) => {
+    mainWindow = window_builder.createMainWindow(windowCloser);
+
+    connector = new Connector(mainWindow, guiderShareWindows, traineeShareWindows, role, ShareWindow);
+
+
     const menu = defaultMenu(app, shell);
 
     menu.splice(1, 0, {
@@ -54,9 +59,6 @@ app.on('ready', (err) => {
 
     Menu.setApplicationMenu(Menu.buildFromTemplate(menu));
 
-    mainWindow = window_builder.createMainWindow(windowCloser);
-
-    connector = new Connector(mainWindow, guiderShareWindows, traineeShareWindows, role, ShareWindow);
 
 });
 
