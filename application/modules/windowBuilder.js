@@ -14,7 +14,8 @@ module.exports = {
         });
 
         // and load the index.html of the app.
-        mainWindow.loadURL(`file://${__dirname}/../public/index.html`);
+        // mainWindow.loadURL(`file://${__dirname}/../public/index.html`);
+        mainWindow.loadURL('http://127.0.0.1:58101');
 
         // Open the DevTools.
         // mainWindow.webContents.openDevTools();
@@ -41,10 +42,14 @@ module.exports = {
         });
 
         // and load the index.html of the app.
-        videoWindow.loadURL(`file://${__dirname}/../public/${role.role}_oto.html`);
+        //videoWindow.loadURL(`file://${__dirname}/../public/${role.role}_oto.html`);
+        videoWindow.loadURL(`http://127.0.0.1:58101/${role.role}_oto.html`);
 
         // Open the DevTools.
-        // mainWindow.webContents.openDevTools();
+        videoWindow.webContents.openDevTools();
+        if(role.role == 'trainee') {
+            videoWindow.setIgnoreMouseEvents(true);
+        }
 
         // Emitted when the window is closed.
         videoWindow.on('closed', closer);

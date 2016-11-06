@@ -7,6 +7,7 @@ var patronusManager = null;
 var localVideoElement = null;
 var localCanvasElement = null;
 var remoteImageCanvasElement = null;
+var annotationModule = null;
 
 class PatronusGuiderManager extends PatronusManager{
 
@@ -18,16 +19,22 @@ class PatronusGuiderManager extends PatronusManager{
 	/*
 		override
 	 */
-	 onDataReceived(data){
+	 onDataConnectionReceived(data){
+	 	console.log(data.act);
 	 	switch(data.act){
 	 		case 'sync_screenshot' :
 	 			//.imgはurl
-	 			const remoteImageContext = remoteImageCanvasElement.getContext('2d');
-	 			remoteImageContext.drawImage(data.img,0,0,remoteImageCanvasElement.width,remoteImageCanvasElement.height);
-	 		break;
+	 			console.log('case sync');
+	 			const img = new Image();
+	 			img.onload = function(){
+	 				const remoteImageContext = remoteImageCanvasElement.getContext('2d');
+	 				remoteImageContext.drawImage(img,0,0,remoteImageCanvasElement.width,remoteImageCanvasElement.height);
+	 			}
+	 			img.src = data.img;
+	 			break;
 	 		default :
 	 			console.log('can not find such a act onDataReceived');
-	 			console.log(data);
+	 			//console.log(data);
 	 		break;
 	 	}
 	 }
@@ -36,7 +43,7 @@ class PatronusGuiderManager extends PatronusManager{
 
 
 window.onload = function(e){
-	patronusManager = new patronusGuiderManager(SKYWAY_API_KEY);
+	patronusManager = new PatronusGuiderManager(SKYWAY_API_KEY);
 
 }
 
@@ -65,7 +72,7 @@ ipcRenderer.on('connect_trainee',(event,arg)=>{
 	localCanvasElement.style.backgroundColor = 'rgba(0,0,0,0)'; 
 	localCanvasElement.id = "local_canvas";
 	localCanvasElement.style.position = "fixed";
-	localVideoElement.style.zIndex = 1;
+	localCanvasElement.style.zIndex = 1;
 
 	remoteImageCanvasElement.width = traineeScreenWidth;
 	remoteImageCanvasElement.height = traineeScreenHeight;
@@ -84,7 +91,8 @@ ipcRenderer.on('connect_trainee',(event,arg)=>{
 		//WARNING user mediaの取得状況に注意 => 完全に取得できたイベントの後にやった方がよさそう
 		patronusManager.requestConnectionForData(arg.peerId);
 		patronusManager.requestConnectionForStream(arg.peerId);
-
+		annotationModule = new AnnotationModule(localCanvasElement,true,patronusManager);
 	});
 
 });
+

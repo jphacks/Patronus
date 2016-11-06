@@ -7,6 +7,7 @@ const RoomManager = require(path.join(__dirname, 'modules', 'roommanager.js'));
 const io = socketio.listen(58100);
 const room_manager = new RoomManager();
 
+
 io.sockets.on("connection", (socket) => {
     /* ペアリングトークン作成要求 */
     socket.on("make_pairing_token", (data) => {
@@ -48,5 +49,9 @@ io.sockets.on("connection", (socket) => {
     });
     socket.on('scroll', (data) => {
     io.emit('scroll', data);
+    });
+    socket.on('create_guider_window', (data) => {
+        console.log('create_guider_window', data);
+        socket.to(data.room).emit('create_guider_window', data);
     });
 });
