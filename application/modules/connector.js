@@ -17,7 +17,7 @@ module.exports = class Connector {
 
     connect() {
         if(!this.socket) {
-            this.socket = io('http://localhost:58100');
+            this.socket = io('http://133.68.112.180:58100');
         }
     }
 
@@ -88,7 +88,8 @@ module.exports = class Connector {
                         //console.log(imagePath);
                         const datauri = new Datauri();
                         datauri.on('encoded',(content)=>{
-                            event.sender.send('re_get_screenshot',imageURL);
+
+                            event.sender.send('re_get_screenshot',content);
                             fs.unlink(imagePath,(err)=>{
                                 if(err){
                                     console.log(err);
