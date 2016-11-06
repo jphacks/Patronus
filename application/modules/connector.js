@@ -131,7 +131,7 @@ module.exports = class Connector {
                 //window生成 -> ウィンドウロードイベント -> window.webContents.send('connect_trainee',data);
                 if(this.role.role == 'guider') {
                     console.log('create guider window from socket: ', data);
-                    this.mainWindow.webContents.send('create_guider_window', data);
+                    this.mainWindow.webContents.send('connect_trainee', data);
                 }
             });
         });
