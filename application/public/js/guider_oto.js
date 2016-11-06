@@ -100,6 +100,7 @@ ipcRenderer.on('connect_trainee',(event,arg)=>{
 
 
 	patronusManager.localVideoElement = localVideoElement;
+	patronusManager.remoteVideoElement = remoteImageVideoElement;
 	patronusManager.startLocalVideo({width:traineeScreenWidth,height:traineeScreenHeight},function(){
 		//WARNING user mediaの取得状況に注意 => 完全に取得できたイベントの後にやった方がよさそう
 		patronusManager.requestConnectionForData(arg.peerId);
