@@ -31,4 +31,9 @@ io.sockets.on("connection", (socket) => {
             socket.emit('error_message', {body: 'there is no room with your token'});
         }
     });
+
+    socket.on('create_guider_window', (data) => {
+        console.log('create_guider_window', data);
+        socket.to(data.room).emit('create_guider_window', data);
+    });
 });
