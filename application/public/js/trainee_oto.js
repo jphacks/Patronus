@@ -80,51 +80,51 @@ class PatronusTraineeManager extends PatronusManager{
 		this.startRemoteVideo(stream);
 	}
 
-	initPeerEventListener(){
-		const self = this;
-		this.peer.on('open',(id)=>{
-			self.peerId = id;
-			console.log(id);
-			//startVideo();
-			self.setOnWindowCloseEvent();
-			self.onPeerOpened(id);
-		});
-		//	startVideo();
+	// initPeerEventListener(){
+	// 	const self = this;
+	// 	this.peer.on('open',(id)=>{
+	// 		self.peerId = id;
+	// 		console.log(id);
+	// 		//startVideo();
+	// 		self.setOnWindowCloseEvent();
+	// 		self.onPeerOpened(id);
+	// 	});
+	// 	//	startVideo();
 
-		this.peer.on('close',function(){
-			self.peer.destroy();
-			self.onPeerClosed();
-		});
-
-
-		/**
-		 * [description] data用のコネクション要求が呼ばれた時のイベント
-		 * @param  {[type]} conn){	console.log(conn);	connectedMap.set(conn.peer,conn);	requestConnectionForData(conn);} [description]
-		 * @return {[type]}                                                                                                [description]
-		 */
-		this.peer.on('connection',(conn)=>{
-			console.log(conn);
-			self.dataConnectionMap.set(conn.peer,conn);
-			self.initDataConnectionEvents(conn);
-			self.onPeerConnected(conn);
-			//requestConnectionForData(conn);
-		});
+	// 	this.peer.on('close',function(){
+	// 		self.peer.destroy();
+	// 		self.onPeerClosed();
+	// 	});
 
 
-		/**
-		 * [description] stream用のコネクション要求が呼ばれた時のイベント
-		 * @param  {[type]} conn){} [description]
-		 * @return {[type]}           [description]
-		 */
-		this.peer.on('call',(call)=>{
-			console.log(call);
-			// call.answer(mediastream);
-			self.streamConnectionMap.set(call.peer,call);
-			self.initStreamConnectionEvents(call);
-				call.answer(self.localStream);
-				self.onPeerCalled(call);
-		});	
-	}
+	// 	*
+	// 	 * [description] data用のコネクション要求が呼ばれた時のイベント
+	// 	 * @param  {[type]} conn){	console.log(conn);	connectedMap.set(conn.peer,conn);	requestConnectionForData(conn);} [description]
+	// 	 * @return {[type]}                                                                                                [description]
+		 
+	// 	this.peer.on('connection',(conn)=>{
+	// 		console.log(conn);
+	// 		self.dataConnectionMap.set(conn.peer,conn);
+	// 		self.initDataConnectionEvents(conn);
+	// 		self.onPeerConnected(conn);
+	// 		//requestConnectionForData(conn);
+	// 	});
+
+
+	// 	/**
+	// 	 * [description] stream用のコネクション要求が呼ばれた時のイベント
+	// 	 * @param  {[type]} conn){} [description]
+	// 	 * @return {[type]}           [description]
+	// 	 */
+	// 	this.peer.on('call',(call)=>{
+	// 		console.log(call);
+	// 		// call.answer(mediastream);
+	// 		self.streamConnectionMap.set(call.peer,call);
+	// 		self.initStreamConnectionEvents(call);
+	// 			call.answer(self.localStream);
+	// 			self.onPeerCalled(call);
+	// 	});	
+	// }
 
 
 }
@@ -210,7 +210,7 @@ ipcRenderer.on('re_get_screenshot',(event,arg)=>{
 	//console.log(arg);
 	//url化必要そう
 	patronusManager.broadcastData2AllConnection({act:"sync_screenshot",img:arg});
-	setTimeout(loopGetScreenShotAndSync,2000);
+	setTimeout(loopGetScreenShotAndSync,1000);
 });
 
 
