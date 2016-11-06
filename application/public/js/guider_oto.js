@@ -94,5 +94,7 @@ ipcRenderer.on('connect_trainee',(event,arg)=>{
 		annotationModule = new AnnotationModule(localCanvasElement,true,patronusManager);
 	});
 
+	ipcRenderer.send('sync_window_size',{width:traineeScreenWidth,height:traineeScreenHeight});
+
 });
 
