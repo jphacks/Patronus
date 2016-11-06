@@ -4,7 +4,7 @@ class AnnotationModule{
 	constructor(canvasElement,sender=true,patronus){
 		var self = this;
 		this.canvas = canvasElement;
-		this.reciever=true;
+		this.sender=sender;
 		this.patronus = patronus;
 		this.onMove = null;
 		this.onUp = null;
@@ -13,7 +13,8 @@ class AnnotationModule{
 		this.scale = 0.4;
 		this.aImage.onload = function(){
 			self.initMouseDownEventListener();
-			if(sender){
+			if(slef.sender){
+				console.log('sender');
 				self.setSenderEventMethod();
 			}else{
 				self.setDammySenderEventMethod();

@@ -72,7 +72,7 @@ ipcRenderer.on('connect_trainee',(event,arg)=>{
 	localCanvasElement.style.backgroundColor = 'rgba(0,0,0,0)'; 
 	localCanvasElement.id = "local_canvas";
 	localCanvasElement.style.position = "fixed";
-	localVideoElement.style.zIndex = 1;
+	localCanvasElement.style.zIndex = 1;
 
 	remoteImageCanvasElement.width = traineeScreenWidth;
 	remoteImageCanvasElement.height = traineeScreenHeight;
