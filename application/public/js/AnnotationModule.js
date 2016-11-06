@@ -12,7 +12,7 @@ class AnnotationModule{
 		this.aImage = new Image();
 		this.scale = 0.4;
 		this.aImage.onload = function(){
-			
+
 			self.initMouseDownEventListener();
 			if(self.sender){
 				console.log('sender');
@@ -84,6 +84,7 @@ class AnnotationModule{
 
 	setSenderEventMethod(){
 		var self = this;
+		console.log('set sender event');
 		this.onDown = function(e){
 			console.log('ondown');
 			const clientX = e.clientX;
