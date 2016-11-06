@@ -244,7 +244,7 @@ class PatronusManager{
 	startRemoteVideo(stream){
 		//リモートが一つのみしか対応してない
 		this.remoteVideoElement.src = window.URL.createObjectURL(stream);
-		//this.remoteVideoElement.play();
+		this.remoteVideoElement.play();
 	}
 
 
