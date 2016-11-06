@@ -14,6 +14,12 @@ const ShareWindow = require('./modules/shareWindow.js')(guiderShareWindows, trai
 
 const window_builder = require(path.join(__dirname, 'modules', 'windowBuilder.js'));
 
+const expressModule = require('./modules/expressModule.js');
+
+expressModule.createLocalHtmlServer();
+
+
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -66,20 +72,21 @@ app.on('ready', (err) => {
 app.on('window-all-closed', function() {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
+    // if (process.platform !== 'darwin') {
+    //     app.quit();
+    // }
 });
 
 app.on('activate', function() {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
-        if (role.role === null) {
-            mainWindow = window_builder.createMainWindow(windowCloser);
-        } else {
+        if (role.joined) {
             mainWindow = window_builder.createVideoWindow(role, windowCloser);
+        } else {
+            mainWindow = window_builder.createMainWindow(windowCloser);
         }
+        connector.changeMainWindow(mainWindow);
     }
 });
 
@@ -89,7 +96,8 @@ app.on('activate', function() {
 /* mainWindowが閉じたときのコールバック */
 function windowCloser() {
     mainWindow = null;
-    if(!role.role) {
+    if(role.joined) {
         mainWindow = window_builder.createVideoWindow(role, windowCloser);
+        connector.changeMainWindow(mainWindow);
     }
 }
