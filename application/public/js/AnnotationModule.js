@@ -47,12 +47,13 @@ class AnnotationModule{
 			const ev = function(e){
 				ac.onUp(e);
 			}
-			self.onUpforRemove = ev;
+			ac.onUpforRemove = ev;
 			return ev;
 		})(self));
 	}
 
 	removeMouseMoveUpEventListener(){
+		const self = this;
 		this.canvas.removeEventListener('mousemove', self.onMoveforRemove);
 		this.canvas.removeEventListener('mouseup',self.onUpforRemove);
 	}
