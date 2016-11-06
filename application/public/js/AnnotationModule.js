@@ -36,18 +36,20 @@ class AnnotationModule{
 
 	setMouseMoveUpEventListener(){
 		const self = this;
-		this.canvas.addEventListener('mousemove',(e)=>{
-			self.onMoveForRemove = function(e){
-				self.onMove(e);
+		this.canvas.addEventListener('mousemove',(function(ac){
+			const ev = function(e){
+				ac.onMove(e);
+			};
+			ac.onMoveForRemove = ev
+			return ev;
+		})(self);
+		this.canvas.addEventListener('mouseup',(function(ac){
+			const ev = function(e){
+				ac.onUp(e);
 			}
-			return self.onMoveForRemove;
-		});
-		this.canvas.addEventListener('mouseup',(e)=>{
-			self.onUpforRemove = function(e){
-
-			}
-			return self.onMoveForRemove;
-		});
+			self.onUpforRemove = ev;
+			return ev;
+		}(self));
 	}
 
 	removeMouseMoveUpEventListener(){
