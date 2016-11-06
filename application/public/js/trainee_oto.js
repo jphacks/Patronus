@@ -25,7 +25,7 @@ class PatronusTraineeManager extends PatronusManager{
 	}
 
 	onDataConnectionOpened(conn){
-		loopGetScreenShotAndSync();
+		//loopGetScreenShotAndSync();
 	}
 
 	onDataConnectionReceived(data){
@@ -63,6 +63,7 @@ class PatronusTraineeManager extends PatronusManager{
 							}
 						}
 					},function(stream){
+						console.log(stream);
 						self.localstream = stream;
 						self.localVideoElement.src = window.URL.createObjectURL(stream);
 						self.localVideoElement.onloadedmetadata = function(){
@@ -183,7 +184,7 @@ window.onload = function(e){
 
 	document.body.appendChild(guiderVideoCanvasElement);
 	document.body.appendChild(guiderCanvasElement);
-
+	document.body.appendChild(localVideoElement);
 	setInterval(()=>{
 		//ここで画像処理をする
 		
