@@ -186,8 +186,6 @@ window.onload = function(e){
 	guiderVideoCanvasElement.style.backgroundColor = 'rgba(0,0,0,0)';
 	guiderVideoCanvasElement.id = 'remote_video_canvas';
 	guiderVideoCanvasElement.style.position="fixed";
-	guiderVideoCanvasElement.style.transform = "scaleX(-1)";
-	guiderVideoCanvasElement.style.webkitTransform = "scaleX(-1)";
 	guiderVideoCanvasElement.style.opacity = 0.5;
 	guiderVideoCanvasElement.style.zIndex = 0;
 
@@ -222,37 +220,53 @@ function loopDrawFace(){
 function drawFace(){	
 	var positions = ctracker.getCurrentPosition();
 	const context = guiderVideoCanvasElement.getContext('2d');
+	const w = guiderVideoElement.width;
 
 	context.clearRect(0,0,guiderVideoElement.width, guiderVideoElement.height);
 
-	context.beginPath();
-	context.moveTo(positions[0][0],positions[0][1]);
-	context.lineTo(positions[1][0],positions[1][1]);
-	context.lineTo(positions[2][0],positions[2][1]);
-	context.lineTo(positions[3][0],positions[3][1]);
-	context.lineTo(positions[4][0],positions[4][1]);
-	context.lineTo(positions[5][0],positions[5][1]);
-	context.lineTo(positions[6][0],positions[6][1]);
-	context.lineTo(positions[7][0],positions[7][1]);
-	context.lineTo(positions[8][0],positions[8][1]);
-	context.lineTo(positions[9][0],positions[9][1]);
-	context.lineTo(positions[10][0],positions[10][1]);
-	context.lineTo(positions[11][0],positions[11][1]);
-	context.lineTo(positions[12][0],positions[12][1]);
-	context.lineTo(positions[13][0],positions[13][1]);
-	context.lineTo(positions[14][0],positions[14][1]);
-	context.lineTo(positions[15][0],positions[15][1]);
-	context.lineTo(positions[16][0],positions[16][1]);
-	context.lineTo(positions[17][0],positions[17][1]);
-	context.lineTo(positions[18][0],positions[18][1]);
-	context.lineTo(positions[22][0],positions[22][1]);
-	context.lineTo(positions[21][0],positions[21][1]);
-	context.lineTo(positions[20][0],positions[20][1]);
-	context.lineTo(positions[19][0],positions[19][1]);
-	context.closePath();
-	context.clip();
+    context.save();
+    context.beginPath();
+    context.moveTo(w-positions[1][0],positions[1][1]);
+    context.lineTo(w-positions[2][0],positions[2][1]);
+    context.lineTo(w-positions[3][0],positions[3][1]);
+    context.lineTo(w-positions[4][0],positions[4][1]);
+    context.lineTo(w-positions[5][0],positions[5][1]);
+    context.lineTo(w-positions[6][0],positions[6][1]);
+    context.lineTo(w-positions[7][0],positions[7][1]);
+    context.lineTo(w-positions[8][0],positions[8][1]);
+    context.lineTo(w-positions[9][0],positions[9][1]);
+    context.lineTo(w-positions[10][0],positions[10][1]);
+    context.lineTo(w-positions[11][0],positions[11][1]);
+    context.lineTo(w-positions[12][0],positions[12][1]);
+    context.lineTo(w-positions[13][0],positions[13][1]);
 
-	context.drawImage(guiderVideoElement, 0, 0, guiderVideoElement.width, guiderVideoElement.height);
+    context.bezierCurveTo(
+      w-(positions[14][0]*2-positions[28][0]),
+      positions[14][1],
+      w-(positions[13][0]*2-positions[28][0]),
+      positions[33][1]*2-positions[7][1],
+      w-positions[33][0],
+      positions[33][1]*2-positions[7][1]      
+      );
+
+
+    context.bezierCurveTo(
+      w-(positions[1][0]*2-positions[23][0]),
+      positions[33][1]*2-positions[7][1],
+      w-(positions[0][0]*2-positions[23][0]),
+      positions[0][1],
+      w-positions[1][0],
+      positions[1][1]
+      );
+
+    
+    context.closePath();
+
+    context.clip();
+    context.setTransform(-1,0,0,1,0,0);
+
+    context.drawImage(guiderVideoElement, 0, 0, -guiderVideoElement.width, guiderVideoElement.height);
+    context.restore();
 }
 
 
