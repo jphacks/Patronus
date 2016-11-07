@@ -17,6 +17,8 @@ module.exports = {
         // mainWindow.loadURL(`file://${__dirname}/../public/index.html`);
         mainWindow.loadURL('http://127.0.0.1:58101');
 
+        //mainWindow.loadURL('http://127.0.0.1:58101/trainee_oto.html');
+
         // Open the DevTools.
         // mainWindow.webContents.openDevTools();
 
@@ -46,7 +48,7 @@ module.exports = {
         videoWindow.loadURL(`http://127.0.0.1:58101/${role.role}_oto.html`);
 
         // Open the DevTools.
-        videoWindow.webContents.openDevTools();
+        //videoWindow.webContents.openDevTools();
         if(role.role == 'trainee') {
             videoWindow.setIgnoreMouseEvents(true);
         }

@@ -172,6 +172,11 @@ module.exports = class Connector {
                     this.mainWindow.webContents.send('connect_trainee', data);
                 }
             });
+
+            ipcMain.on('sync_window_size',(event,arg)=>{
+                this.mainWindow.setSize(arg.width,arg.height);
+                this.mainWindow.center();
+            });
         });
     }
 };

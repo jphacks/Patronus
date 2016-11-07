@@ -1,10 +1,11 @@
 'use strict'
 
-const {ipcRenderer} = require('electron');
+const {ipcRenderer,desktopCapturer} = require('electron');
 var screenWidth = null;
 var screenHeight = null;
 var patronusManager = null;
 var guiderVideoElement = null;
+var localVideoElement = null
 var guiderCanvasElement = null;
 var guiderVideoCanvasElement = null;
 var annotationModule = null;
@@ -24,7 +25,7 @@ class PatronusTraineeManager extends PatronusManager{
 	}
 
 	onDataConnectionOpened(conn){
-		loopGetScreenShotAndSync();
+		//loopGetScreenShotAndSync();
 	}
 
 	onDataConnectionReceived(data){
@@ -45,8 +46,97 @@ class PatronusTraineeManager extends PatronusManager{
 		}
 	}
 
+	startLocalVideo(callback=function(){}){
+		const self = this;
+		desktopCapturer.getSources({types:['window','screen']},(error,sources)=>{
+			if(error){
+				console.log(error);
+			}
+			for(let i =0; i<sources.length;i++){
+				if(sources[i].name == 'Entire screen'){
+					navigator.webkitGetUserMedia({
+						audio: false,
+						video : {
+							mandatory: {
+								chromeMediaSource: 'desktop',
+								chromeMediaSourceId: sources[i].id,
+								minWidth: screenWidth,
+					            maxWidth: screenWidth,
+					            minHeight: screenHeight,
+					            maxHeight: screenHeight
+							}
+						}
+					},function(stream){
+						console.log(stream);
+						self.localstream = stream;
+						self.localVideoElement.src = window.URL.createObjectURL(stream);
+						self.localVideoElement.onloadedmetadata = function(){
+							console.log('callback');
+							callback();
+						}
+						self.localVideoElement.play();
+					},function(error){
+						console.log(('error on startLocalVideo on trainee_oto.js'))
+						console.log(error);
+					});
+				}
+			}
+		});
+	}
+
 	onStreamAdded(stream){
 		this.startRemoteVideo(stream);
+	}
+
+	initPeerEventListener(){
+		const self = this;
+		this.peer.on('open',(id)=>{
+			self.peerId = id;
+			console.log(id);
+			//startVideo();
+			self.setOnWindowCloseEvent();
+			self.onPeerOpened(id);
+		});
+		//	startVideo();
+
+		this.peer.on('close',function(){
+			self.peer.destroy();
+			self.onPeerClosed();
+		});
+
+
+		// *
+		//  * [description] data用のコネクション要求が呼ばれた時のイベント
+		//  * @param  {[type]} conn){	console.log(conn);	connectedMap.set(conn.peer,conn);	requestConnectionForData(conn);} [description]
+		//  * @return {[type]}                                                                                                [description]
+		 
+		this.peer.on('connection',(conn)=>{
+			console.log(conn);
+			self.dataConnectionMap.set(conn.peer,conn);
+			self.initDataConnectionEvents(conn);
+			self.onPeerConnected(conn);
+			//requestConnectionForData(conn);
+		});
+
+
+		/**
+		 * [description] stream用のコネクション要求が呼ばれた時のイベント
+		 * @param  {[type]} conn){} [description]
+		 * @return {[type]}           [description]
+		 */
+		this.peer.on('call',(call)=>{
+			console.log(call);
+			// call.answer(mediastream);
+			self.streamConnectionMap.set(call.peer,call);
+			self.initStreamConnectionEvents(call);
+			patronusManager.startLocalVideo(function(){
+				console.log('answer');
+				console.log(self.localstream);
+				call.answer(self.localstream);
+				self.onPeerCalled(call);
+	
+			});
+		});	
 	}
 
 
@@ -62,6 +152,7 @@ window.onload = function(e){
 	screenHeight = window.parent.screen.height;
 
 	guiderVideoElement = document.createElement('video');
+	localVideoElement = document.createElement('video');
 	guiderVideoCanvasElement = document.createElement('canvas');
 	guiderCanvasElement = document.createElement('canvas');
 
@@ -73,6 +164,15 @@ window.onload = function(e){
 	guiderVideoElement.id = 'remote_video';
 	guiderVideoElement.style.position="fixed";
 	guiderVideoElement.style.zIndex = 0;
+
+	localVideoElement.width = screenWidth;
+	localVideoElement.height = screenHeight;
+	localVideoElement.style.width = String(screenWidth)+'px';
+	localVideoElement.style.height = String(screenHeight)+'px';
+	localVideoElement.style.backgroundColor = 'rgba(0,0,0,0)'
+	localVideoElement.id = 'local_video';
+	localVideoElement.style.position="fixed";
+	localVideoElement.style.zIndex = 0;
 
 	guiderVideoCanvasElement.width = screenWidth;
 	guiderVideoCanvasElement.height = screenHeight;
@@ -95,7 +195,7 @@ window.onload = function(e){
 
 	document.body.appendChild(guiderVideoCanvasElement);
 	document.body.appendChild(guiderCanvasElement);
-
+	//document.body.appendChild(localVideoElement);
 	setInterval(()=>{
 		//ここで画像処理をする
 		
@@ -105,7 +205,10 @@ window.onload = function(e){
 
 
 	patronusManager = new PatronusTraineeManager(SKYWAY_API_KEY);
+	patronusManager.setLocalVideoElement(localVideoElement);
 	patronusManager.setRemoteVideoElement(guiderVideoElement);
+
+	
 	annotationModule = new AnnotationModule(guiderCanvasElement,false,patronusManager);
 }
 
@@ -119,7 +222,7 @@ ipcRenderer.on('re_get_screenshot',(event,arg)=>{
 	//console.log(arg);
 	//url化必要そう
 	patronusManager.broadcastData2AllConnection({act:"sync_screenshot",img:arg});
-	setTimeout(loopGetScreenShotAndSync,0);
+	setTimeout(loopGetScreenShotAndSync,1000);
 });
 
 

@@ -54,6 +54,7 @@ class PatronusManager{
 			// call.answer(mediastream);
 			self.streamConnectionMap.set(call.peer,call);
 			self.initStreamConnectionEvents(call);
+			//console.log(self.localStream);
 			call.answer(self.localStream);
 			self.onPeerCalled(call);
 		});	
@@ -106,9 +107,9 @@ class PatronusManager{
 		console.log(call);
 		call.on('stream',(stream)=>{
 			//リモートのstreamの追加時に呼ばれる
+			console.log('on stream');
 			console.log(stream);
-			//TODO リモートの設定
-			this.startRemoteVideo(stream);
+			self.startRemoteVideo(stream);
 			self.onStreamAdded(stream);
 		});
 		call.on('close',()=>{
@@ -234,6 +235,7 @@ class PatronusManager{
 		});
 	}
 
+	
 	/**
 	 * [startRemoteVideo 設定してあるエレメントにリモートストリームを適応]
 	 * @param  {[type]} stream [description]
