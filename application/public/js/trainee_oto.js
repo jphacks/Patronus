@@ -9,7 +9,9 @@ var localVideoElement = null
 var guiderCanvasElement = null;
 var guiderVideoCanvasElement = null;
 var annotationModule = null;
-
+var ctracker = new clm.tracker();
+ctracker.init(pModel);
+  
 class PatronusTraineeManager extends PatronusManager{
 	
 	constructor(apikey){
@@ -87,6 +89,11 @@ class PatronusTraineeManager extends PatronusManager{
 		this.startRemoteVideo(stream);
 	}
 
+	setRemoteVideo(stream){
+		this.remoteVideoElement.src = window.URL.createObjectURL(stream);
+		ctracker.start(this.remoteVideoElement);
+	}
+
 	initPeerEventListener(){
 		const self = this;
 		this.peer.on('open',(id)=>{
@@ -137,6 +144,7 @@ class PatronusTraineeManager extends PatronusManager{
 	}
 
 
+
 }
 
 
@@ -178,6 +186,8 @@ window.onload = function(e){
 	guiderVideoCanvasElement.style.backgroundColor = 'rgba(0,0,0,0)';
 	guiderVideoCanvasElement.id = 'remote_video_canvas';
 	guiderVideoCanvasElement.style.position="fixed";
+	guiderVideoCanvasElement.style.transform = "scaleX(-1)";
+	guiderVideoCanvasElement.style.webkitTransform = "scaleX(-1)";
 	guiderVideoCanvasElement.style.opacity = 0.5;
 	guiderVideoCanvasElement.style.zIndex = 0;
 
@@ -193,13 +203,8 @@ window.onload = function(e){
 	document.body.appendChild(guiderVideoCanvasElement);
 	document.body.appendChild(guiderCanvasElement);
 	//document.body.appendChild(localVideoElement);
-	setInterval(()=>{
-		//ここで画像処理をする
-		
-		const guiderVideoCanvasElementContext = guiderVideoCanvasElement.getContext('2d');
-		guiderVideoCanvasElementContext.drawImage(guiderVideoElement, 0, 0, guiderVideoElement.width, guiderVideoElement.height); 
-	},10);
-
+	
+	loopDrawFace();
 
 	patronusManager = new PatronusTraineeManager(SKYWAY_API_KEY);
 	patronusManager.setLocalVideoElement(localVideoElement);
@@ -208,6 +213,48 @@ window.onload = function(e){
 	
 	annotationModule = new AnnotationModule(guiderCanvasElement,false,patronusManager);
 }
+
+function loopDrawFace(){
+	requestAnimationFrame(drawLoop); 
+	//ここで画層処理 
+}
+
+function drawFace(){	
+	var positions = ctracker.getCurrentPosition();
+	const context = guiderVideoCanvasElement.getContext('2d');
+
+	context.clearRect(0,0,guiderVideoElement.width, guiderVideoElement.height);
+
+	context.beginPath();
+	context.moveTo(positions[0][0],positions[0][1]);
+	context.lineTo(positions[1][0],positions[1][1]);
+	context.lineTo(positions[2][0],positions[2][1]);
+	context.lineTo(positions[3][0],positions[3][1]);
+	context.lineTo(positions[4][0],positions[4][1]);
+	context.lineTo(positions[5][0],positions[5][1]);
+	context.lineTo(positions[6][0],positions[6][1]);
+	context.lineTo(positions[7][0],positions[7][1]);
+	context.lineTo(positions[8][0],positions[8][1]);
+	context.lineTo(positions[9][0],positions[9][1]);
+	context.lineTo(positions[10][0],positions[10][1]);
+	context.lineTo(positions[11][0],positions[11][1]);
+	context.lineTo(positions[12][0],positions[12][1]);
+	context.lineTo(positions[13][0],positions[13][1]);
+	context.lineTo(positions[14][0],positions[14][1]);
+	context.lineTo(positions[15][0],positions[15][1]);
+	context.lineTo(positions[16][0],positions[16][1]);
+	context.lineTo(positions[17][0],positions[17][1]);
+	context.lineTo(positions[18][0],positions[18][1]);
+	context.lineTo(positions[22][0],positions[22][1]);
+	context.lineTo(positions[21][0],positions[21][1]);
+	context.lineTo(positions[20][0],positions[20][1]);
+	context.lineTo(positions[19][0],positions[19][1]);
+	context.closePath();
+	context.clip();
+
+	context.drawImage(guiderVideoElement, 0, 0, guiderVideoElement.width, guiderVideoElement.height);
+}
+
 
 
 function loopGetScreenShotAndSync(){
