@@ -213,7 +213,8 @@ window.onload = function(e){
 }
 
 function loopDrawFace(){
-	requestAnimationFrame(drawLoop); 
+	requestAnimationFrame(loopDrawFace);
+	drawFace(); 
 	//ここで画層処理 
 }
 
@@ -223,50 +224,51 @@ function drawFace(){
 	const w = guiderVideoCanvasElement.width;
 
 	context.clearRect(0,0,guiderVideoCanvasElement.width, guiderVideoCanvasElement.height);
+	if(positions){
+	    context.save();
+	    context.beginPath();
+	    context.moveTo(w-positions[1][0],positions[1][1]);
+	    context.lineTo(w-positions[2][0],positions[2][1]);
+	    context.lineTo(w-positions[3][0],positions[3][1]);
+	    context.lineTo(w-positions[4][0],positions[4][1]);
+	    context.lineTo(w-positions[5][0],positions[5][1]);
+	    context.lineTo(w-positions[6][0],positions[6][1]);
+	    context.lineTo(w-positions[7][0],positions[7][1]);
+	    context.lineTo(w-positions[8][0],positions[8][1]);
+	    context.lineTo(w-positions[9][0],positions[9][1]);
+	    context.lineTo(w-positions[10][0],positions[10][1]);
+	    context.lineTo(w-positions[11][0],positions[11][1]);
+	    context.lineTo(w-positions[12][0],positions[12][1]);
+	    context.lineTo(w-positions[13][0],positions[13][1]);
 
-    context.save();
-    context.beginPath();
-    context.moveTo(w-positions[1][0],positions[1][1]);
-    context.lineTo(w-positions[2][0],positions[2][1]);
-    context.lineTo(w-positions[3][0],positions[3][1]);
-    context.lineTo(w-positions[4][0],positions[4][1]);
-    context.lineTo(w-positions[5][0],positions[5][1]);
-    context.lineTo(w-positions[6][0],positions[6][1]);
-    context.lineTo(w-positions[7][0],positions[7][1]);
-    context.lineTo(w-positions[8][0],positions[8][1]);
-    context.lineTo(w-positions[9][0],positions[9][1]);
-    context.lineTo(w-positions[10][0],positions[10][1]);
-    context.lineTo(w-positions[11][0],positions[11][1]);
-    context.lineTo(w-positions[12][0],positions[12][1]);
-    context.lineTo(w-positions[13][0],positions[13][1]);
-
-    context.bezierCurveTo(
-      w-(positions[14][0]*2-positions[28][0]),
-      positions[14][1],
-      w-(positions[13][0]*2-positions[28][0]),
-      positions[33][1]*2-positions[7][1],
-      w-positions[33][0],
-      positions[33][1]*2-positions[7][1]      
-      );
+	    context.bezierCurveTo(
+	      w-(positions[14][0]*2-positions[28][0]),
+	      positions[14][1],
+	      w-(positions[13][0]*2-positions[28][0]),
+	      positions[33][1]*2-positions[7][1],
+	      w-positions[33][0],
+	      positions[33][1]*2-positions[7][1]      
+	      );
 
 
-    context.bezierCurveTo(
-      w-(positions[1][0]*2-positions[23][0]),
-      positions[33][1]*2-positions[7][1],
-      w-(positions[0][0]*2-positions[23][0]),
-      positions[0][1],
-      w-positions[1][0],
-      positions[1][1]
-      );
+	    context.bezierCurveTo(
+	      w-(positions[1][0]*2-positions[23][0]),
+	      positions[33][1]*2-positions[7][1],
+	      w-(positions[0][0]*2-positions[23][0]),
+	      positions[0][1],
+	      w-positions[1][0],
+	      positions[1][1]
+	      );
 
-    
-    context.closePath();
+	    
+	    context.closePath();
 
-    context.clip();
-    context.setTransform(-1,0,0,1,0,0);
+	    context.clip();
+	    context.setTransform(-1,0,0,1,0,0);
 
-    context.drawImage(guiderVideoElement, 0, 0, -guiderVideoCanvasElement.width, guiderVideoCanvasElement.height);
-    context.restore();
+	    context.drawImage(guiderVideoElement, 0, 0, -guiderVideoCanvasElement.width, guiderVideoCanvasElement.height);
+	    context.restore();
+	}
 }
 
 
