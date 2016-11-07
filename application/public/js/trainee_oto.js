@@ -70,7 +70,7 @@ class PatronusTraineeManager extends PatronusManager{
 						}
 					},function(stream){
 						console.log(stream);
-						self.localstream = stream;
+						self.localStream = stream;
 						self.localVideoElement.src = window.URL.createObjectURL(stream);
 						self.localVideoElement.onloadedmetadata = function(){
 							callback();
@@ -87,12 +87,10 @@ class PatronusTraineeManager extends PatronusManager{
 
 	onStreamAdded(stream){
 		this.startRemoteVideo(stream);
+		ctracker.start(this.remoteVideoElement);		
 	}
 
-	setRemoteVideo(stream){
-		this.remoteVideoElement.src = window.URL.createObjectURL(stream);
-		ctracker.start(this.remoteVideoElement);
-	}
+	
 
 	initPeerEventListener(){
 		const self = this;
