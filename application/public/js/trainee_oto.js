@@ -225,6 +225,7 @@ function drawFace(){
 
 	context.clearRect(0,0,guiderVideoCanvasElement.width, guiderVideoCanvasElement.height);
 	if(positions){
+		console.log('draw');
 	    context.save();
 	    context.beginPath();
 	    context.moveTo(w-positions[1][0],positions[1][1]);
@@ -268,6 +269,9 @@ function drawFace(){
 
 	    context.drawImage(guiderVideoElement, 0, 0, -guiderVideoCanvasElement.width, guiderVideoCanvasElement.height);
 	    context.restore();
+	}else{
+		console.log('undraw');
+	    context.drawImage(guiderVideoElement, 0, 0, -guiderVideoCanvasElement.width, guiderVideoCanvasElement.height);		
 	}
 }
 
