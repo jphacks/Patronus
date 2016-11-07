@@ -184,7 +184,7 @@ window.onload = function(e){
 	guiderVideoCanvasElement.style.backgroundColor = 'rgba(0,0,0,0)';
 	guiderVideoCanvasElement.id = 'remote_video_canvas';
 	guiderVideoCanvasElement.style.position="fixed";
-	guiderVideoCanvasElement.style.opacity = 0.5;
+	//guiderVideoCanvasElement.style.opacity = 0.5;
 	guiderVideoCanvasElement.style.zIndex = 0;
 
 	guiderCanvasElement.width = screenWidth;
