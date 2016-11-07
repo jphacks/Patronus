@@ -220,9 +220,9 @@ function loopDrawFace(){
 function drawFace(){	
 	var positions = ctracker.getCurrentPosition();
 	const context = guiderVideoCanvasElement.getContext('2d');
-	const w = guiderVideoElement.width;
+	const w = guiderVideoCanvasElement.width;
 
-	context.clearRect(0,0,guiderVideoElement.width, guiderVideoElement.height);
+	context.clearRect(0,0,guiderVideoCanvasElement.width, guiderVideoCanvasElement.height);
 
     context.save();
     context.beginPath();
@@ -265,7 +265,7 @@ function drawFace(){
     context.clip();
     context.setTransform(-1,0,0,1,0,0);
 
-    context.drawImage(guiderVideoElement, 0, 0, -guiderVideoElement.width, guiderVideoElement.height);
+    context.drawImage(guiderVideoElement, 0, 0, -guiderVideoCanvasElement.width, guiderVideoCanvasElement.height);
     context.restore();
 }
 
