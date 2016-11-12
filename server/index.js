@@ -31,16 +31,12 @@ io.sockets.on("connection", (socket) => {
         }
     });
 
-    socket.on('createGuiderShareWindow', (data) => {
+    socket.on('createShareWindow', (data) => {
         console.log(data)
-    io.emit('createGuiderShareWindow', data);
+    io.emit('createShareWindow', data);
     });
-    socket.on('createTraineeShareWindow', (data) => {
-        console.log(data)
-    io.emit('createTraineeShareWindow', data);
-    });
-    socket.on('closeWindow', (data) => {
-    io.emit('closeWindow', data);
+    socket.on('closeShareWindow', (data) => {
+    io.emit('closeShareWindow', data);
     });
     socket.on('move', (data) => {
     io.emit('move', data);
