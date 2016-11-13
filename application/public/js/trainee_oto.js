@@ -200,7 +200,7 @@ window.onload = function(e){
 	document.body.appendChild(guiderCanvasElement);
 	//document.body.appendChild(localVideoElement);
 	
-	loopDrawFace();
+	loopDraw();
 
 	patronusManager = new PatronusTraineeManager(SKYWAY_API_KEY);
 	patronusManager.setLocalVideoElement(localVideoElement);
@@ -275,8 +275,8 @@ drawVideo["translusent"] = function(){
 	context.drawImage(guiderVideoElement,0,0,-guiderVideoCanvasElement.width,guiderVideoCanvasElement.height);
 }
 
-function loopDrawFace(){
-	requestAnimationFrame(loopDrawFace);
+function loopDraw(){
+	requestAnimationFrame(loopDraw);
 	drawVideo[drawType](); 
 	//ここで画層処理 
 }
