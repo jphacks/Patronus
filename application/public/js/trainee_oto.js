@@ -210,18 +210,13 @@ window.onload = function(e){
 	annotationModule = new AnnotationModule(guiderCanvasElement,false,patronusManager);
 }
 
-function loopDrawFace(){
-	requestAnimationFrame(loopDrawFace);
-	drawFace(); 
-	//ここで画層処理 
-}
-
-function drawFace(){	
-	var positions = ctracker.getCurrentPosition();
+var drawVideo = {};
+var drawType = "translucent";
+drawVideo["face"] = function(){
 	const context = guiderVideoCanvasElement.getContext('2d');
+	context.clearRect(0,0,guiderVideoCanvasElement.width,guiderVideoCanvasElement.height);
 	const w = guiderVideoCanvasElement.width;
 
-	context.clearRect(0,0,guiderVideoCanvasElement.width, guiderVideoCanvasElement.height);
 	if(positions){
 		console.log('draw');
 	    context.save();
@@ -273,6 +268,18 @@ function drawFace(){
 	}
 }
 
+drawVideo["translusent"] = function(){
+	const context = guiderVideoCanvasElement.getContext('2d');
+	context.clearRect(0,0,guiderVideoCanvasElement.width,guiderVideoCanvasElement.height);
+    context.setTransform(-1,0,0,1,0,0);
+	context.drawImage(guiderVideoElement,0,0,-guiderVideoCanvasElement.width,guiderVideoCanvasElement.height);
+}
+
+function loopDrawFace(){
+	requestAnimationFrame(loopDrawFace);
+	drawVideo[drawType](); 
+	//ここで画層処理 
+}
 
 
 function loopGetScreenShotAndSync(){
@@ -288,6 +295,12 @@ ipcRenderer.on('re_get_screenshot',(event,arg)=>{
 	setTimeout(loopGetScreenShotAndSync,1000);
 });
 
-
+ipcRenderer.on('change_draw_type',(event,arg)=>{
+	if(drawType = "face"){
+		drawType = "translucent";
+	}else{
+		drawType = "face";
+	}
+});
 
 
