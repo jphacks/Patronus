@@ -7,6 +7,7 @@ var patronusManager = null;
 var localVideoElement = null;
 var localCanvasElement = null;
 var remoteImageCanvasElement = null;
+var remoteImageVideoElement = null;
 var annotationModule = null;
 
 class PatronusGuiderManager extends PatronusManager{
@@ -54,6 +55,7 @@ ipcRenderer.on('connect_trainee',(event,arg)=>{
 	localVideoElement = document.createElement('video');
 	localCanvasElement = document.createElement('canvas');
 	remoteImageCanvasElement = document.createElement('canvas');
+	remoteImageVideoElement = document.createElement('video');
 
 	//表示はしない
 	localVideoElement.width = traineeScreenWidth;
@@ -81,18 +83,32 @@ ipcRenderer.on('connect_trainee',(event,arg)=>{
 	remoteImageCanvasElement.style.backgroundColor = 'rgba(0,0,0,0)';
 	remoteImageCanvasElement.id = "remote_canvas";
 	remoteImageCanvasElement.style.position = "fixed";
-	remoteImageCanvasElement.zIndex = 0;
+	remoteImageCanvasElement.style.zIndex = 0;
 
+	remoteImageVideoElement.width = traineeScreenWidth;
+	remoteImageVideoElement.height = traineeScreenHeight;
+	remoteImageVideoElement.style.width = String(traineeScreenWidth)+"px";
+	remoteImageVideoElement.style.height = String(traineeScreenHeight)+"px";
+	remoteImageVideoElement.style.backgroundColor = 'rgba(0,0,0,0';
+	remoteImageVideoElement.id = "remote_video";
+	remoteImageVideoElement.style.position = "fixed";
+	remoteImageVideoElement.style.zIndex = 0;
+
+	document.body.appendChild(remoteImageVideoElement);	
 	document.body.appendChild(remoteImageCanvasElement);
 	document.body.appendChild(localCanvasElement);
 
+
 	patronusManager.localVideoElement = localVideoElement;
+	patronusManager.remoteVideoElement = remoteImageVideoElement;
 	patronusManager.startLocalVideo({width:traineeScreenWidth,height:traineeScreenHeight},function(){
 		//WARNING user mediaの取得状況に注意 => 完全に取得できたイベントの後にやった方がよさそう
 		patronusManager.requestConnectionForData(arg.peerId);
 		patronusManager.requestConnectionForStream(arg.peerId);
 		annotationModule = new AnnotationModule(localCanvasElement,true,patronusManager);
 	});
+
+	ipcRenderer.send('sync_window_size',{width:traineeScreenWidth,height:traineeScreenHeight});
 
 });
 
