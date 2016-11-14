@@ -2,9 +2,14 @@ const ipcMain = require('electron').ipcMain;
 const BrowserWindow = require('electron').BrowserWindow;
 
 
-const ShareWindow = function(guiderShareWindows, traineeShareWindows){
+const ShareWindow = function(){
+    const ShareWindows = {}
 
-    function createGuiderShareWindow(url, id, socket){
+    function createShareWindow(id, opt, socket){
+        socket.emit('createShareWindow', {id: id, opt: opt});
+    }
+
+    function createGuiderShareWindow(id, opt, socket){
         let guiderShareWindow = new BrowserWindow({
             // parent: mainWindow,
             x: 0,
@@ -13,12 +18,13 @@ const ShareWindow = function(guiderShareWindows, traineeShareWindows){
             height: 600,
             minWidth:100,
             minHeight: 50,
+            alwaysOnTop: true,
             darkTheme: true
         });
-        guiderShareWindow.loadURL(url);
+        guiderShareWindow.loadURL(opt.url);
 
         guiderShareWindow.on('closed', () => {
-            socket.emit('closeWindow', {id: id});
+            socket.emit('closeShareWindow', {id: id});
             guiderShareWindow = null;
         });
         guiderShareWindow.on('move', () => {
@@ -38,21 +44,10 @@ const ShareWindow = function(guiderShareWindows, traineeShareWindows){
         });
         // guiderShareWindow.webContents.openDevTools();
 
-        // trainee側に送るguiderShareウィンドウの情報
-        const opt = {
-            id: id,
-            x: guiderShareWindow.getPosition()[0],
-            y: guiderShareWindow.getPosition()[1],
-            width: guiderShareWindow.getSize()[0],
-            height: guiderShareWindow.getSize()[1],
-            url: url
-        }
-        socket.emit('createGuiderShareWindow', {guider: guiderShareWindow, opt: opt});
-
-        guiderShareWindows[id] = guiderShareWindow;
+        ShareWindows[id] = guiderShareWindow;
     }
 
-    function createTraineeShareWindow(opt, socket){
+    function createTraineeShareWindow(id, opt){
         let traineeShareWindow = new BrowserWindow({
             x: opt.x,
             y: opt.y,
@@ -66,12 +61,12 @@ const ShareWindow = function(guiderShareWindows, traineeShareWindows){
         traineeShareWindow.on('closed', () => {
             traineeShareWindow = null;
         });
-        socket.emit('createTraineeShareWindow', {trainee: traineeShareWindow, id: opt.id});
-
-        traineeShareWindows[opt.id] = traineeShareWindow;
+        ShareWindows[id] = traineeShareWindow;
     }
 
     return{
+        ShareWindows: ShareWindows,
+        createShareWindow: createShareWindow,
         createGuiderShareWindow: createGuiderShareWindow,
         createTraineeShareWindow: createTraineeShareWindow
     }
