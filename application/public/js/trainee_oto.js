@@ -184,7 +184,7 @@ window.onload = function(e){
 	guiderVideoCanvasElement.style.backgroundColor = 'rgba(0,0,0,0)';
 	guiderVideoCanvasElement.id = 'remote_video_canvas';
 	guiderVideoCanvasElement.style.position="fixed";
-	//guiderVideoCanvasElement.style.opacity = 0.5;
+	guiderVideoCanvasElement.style.opacity = 0.5;
 	guiderVideoCanvasElement.style.zIndex = 0;
 
 	guiderCanvasElement.width = screenWidth;
@@ -268,7 +268,7 @@ drawVideo["face"] = function(){
 	}
 }
 
-drawVideo["translusent"] = function(){
+drawVideo["translucent"] = function(){
 	const context = guiderVideoCanvasElement.getContext('2d');
 	context.clearRect(0,0,guiderVideoCanvasElement.width,guiderVideoCanvasElement.height);
     context.setTransform(-1,0,0,1,0,0);
@@ -298,8 +298,10 @@ ipcRenderer.on('re_get_screenshot',(event,arg)=>{
 ipcRenderer.on('change_draw_type',(event,arg)=>{
 	if(drawType = "face"){
 		drawType = "translucent";
+		guiderVideoCanvasElement.style.opacity = "0.5";
 	}else{
 		drawType = "face";
+		guiderVideoCanvasElement.style.opacity = "1.0";
 	}
 });
 
