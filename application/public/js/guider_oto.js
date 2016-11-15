@@ -107,6 +107,7 @@ ipcRenderer.on('connect_trainee',(event,arg)=>{
 		patronusManager.requestConnectionForData(arg.peerId);
 		patronusManager.requestConnectionForStream(arg.peerId);
 		annotationModule = new AnnotationModule(localCanvasElement,true,patronusManager);
+		loopDraw();
 	});
 
 	ipcRenderer.send('sync_window_size',{width:traineeScreenWidth,height:traineeScreenHeight});
