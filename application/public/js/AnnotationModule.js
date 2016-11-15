@@ -47,7 +47,7 @@ class AnnotationModule{
 			const ev = function(e){
 				ac.onUp(e);
 			}
-			self.onUpforRemove = ev;
+			ac.onUpforRemove = ev;
 			return ev;
 		})(self));
 	}
@@ -79,8 +79,8 @@ class AnnotationModule{
 		this.patronus.broadcastData2AllConnection({
 			act:'draw_annotation',
 			data:{
-				x:x,
-				y:y
+				x:x*remoteScale,
+				y:y*remoteScale
 			}
 		});
 	}
