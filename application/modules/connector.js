@@ -7,11 +7,9 @@ const fs = require('fs');
 const Datauri = require('datauri');
 
 module.exports = class Connector {
-    constructor(mainWindow, guiderShareWindows, traineeShareWindows, role, ShareWindow) {
+    constructor(mainWindow, role, ShareWindow) {
         this.socket = null;
         this.mainWindow = mainWindow;
-        this.guiderShareWindows = guiderShareWindows;
-        this.traineeShareWindows = traineeShareWindows;
         this.role = role;
         this.ShareWindow = ShareWindow;
         this.connect();
@@ -20,7 +18,7 @@ module.exports = class Connector {
 
     connect() {
         if(!this.socket) {
-            this.socket = io('http://192.168.90.39:58100');
+            this.socket = io('http://localhost:58100');
         }
     }
 
@@ -72,40 +70,44 @@ module.exports = class Connector {
                 console.error('error', data.body);
             });
 
-            /* guiderが最初にURLを開いたときtraineeでも開く */
+
+
+
+            /* guiderが最初にURLを開くとき */
             ipcMain.on('openURL', (e, data) => {
-                this.guiderShareWindows[data.id].loadURL(data.url);
+                if(this.role.role == 'guider'){}
+                this.ShareWindow.ShareWindows[data.id].loadURL(data.url);
             });
-            /* guiderShareWindowが作られたときにtraineeShareWindowを作る */
-            socket.on('createGuiderShareWindow', (data) => {
-                console.log(this.role.role);
+            /* guider,traineeに応じたShareWindowを作る */
+            socket.on('createShareWindow', (data) => {
                 console.log(data);
-                this.guiderShareWindows[data.opt.id] = data.guider;
-                if(this.role.role == 'trainee'){ this.ShareWindow.createTraineeShareWindow(data.opt, socket); }
-            });
-            socket.on('createTraineeShareWindow', (data) => {
-                console.log(this.role.role);
-                console.log(data);
-                this.traineeShareWindows[data.id] = data.trainee;
+                // this.ShareWindows[data.id] = data.guider;
+                if(this.role.role == 'guider'){ this.ShareWindow.createGuiderShareWindow(data.id, data.opt, socket); }
+                if(this.role.role == 'trainee'){ this.ShareWindow.createTraineeShareWindow(data.id, data.opt); }
             });
             /* guiderがウィンドウを閉じるとtraineeも閉じる */
-            socket.on('closeWindow', (data) => {
-                if(this.traineeShareWindows[data.id] != null){ this.traineeShareWindows[data.id].close(); }
+            socket.on('closeShareWindow', (data) => {
+                if(this.ShareWindow.ShareWindows[data.id] != null){
+                    this.ShareWindow.ShareWindows[data.id].close();
+                }
             });
             /* guiderがウィンドウを動かすとtraineeも動く */
             socket.on('move', (data) => {
-                console.log(this.traineeShareWindows[data.id])
-                if(this.traineeShareWindows[data.id]){
-                    this.traineeShareWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
+                if(this.role.role == 'trainee'){
+                    this.ShareWindow.ShareWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
                 }
             });
             /* guiderがウィンドウをリサイズするとtraineeもリサイズ */
             socket.on('resize', (data) => {
-                this.traineeShareWindows[data.id].setSize(data.size[0], data.size[1], true);
+                if(this.role.role == 'trainee'){
+                    this.ShareWindow.ShareWindows[data.id].setSize(data.size[0], data.size[1], true);
+                }
             });
             /* guiderがページ遷移したときtraineeもページ遷移 */
             socket.on('updated', (data) => {
-                // this.traineeShareWindows[data.id].loadURL(data.url);
+                if(this.role.role == 'trainee' && this.ShareWindow.ShareWindows[data.id]){
+                    this.ShareWindow.ShareWindows[data.id].loadURL(data.url);
+                }
             });
             /**
              * video window edit by kyoshida
