@@ -9,6 +9,7 @@ var localCanvasElement = null;
 var remoteImageCanvasElement = null;
 var remoteImageVideoElement = null;
 var annotationModule = null;
+var remoteScale = 1.0;
 
 class PatronusGuiderManager extends PatronusManager{
 
@@ -94,7 +95,7 @@ ipcRenderer.on('connect_trainee',(event,arg)=>{
 	remoteImageVideoElement.style.position = "fixed";
 	remoteImageVideoElement.style.zIndex = 0;
 
-	document.body.appendChild(remoteImageVideoElement);	
+	//document.body.appendChild(remoteImageVideoElement);	
 	document.body.appendChild(remoteImageCanvasElement);
 	document.body.appendChild(localCanvasElement);
 
@@ -106,9 +107,34 @@ ipcRenderer.on('connect_trainee',(event,arg)=>{
 		patronusManager.requestConnectionForData(arg.peerId);
 		patronusManager.requestConnectionForStream(arg.peerId);
 		annotationModule = new AnnotationModule(localCanvasElement,true,patronusManager);
+		loopDraw();
 	});
 
 	ipcRenderer.send('sync_window_size',{width:traineeScreenWidth,height:traineeScreenHeight});
 
 });
+
+function drawRemote(){
+	const context = remoteImageCanvasElement.getContext('2d');
+	context.clearRect(0,0,remoteImageCanvasElement.width,remoteImageCanvasElement.height);
+	context.drawImage(remoteImageVideoElement,0,0,remoteImageCanvasElement.width,remoteImageCanvasElement.height);
+}
+
+function loopDraw(){
+	requestAnimationFrame(loopDraw);
+	drawRemote();
+}
+
+ipcRenderer.on('remote_scale_up',(event,arg)=>{
+	remoteScale = remoteScale - 0.1;
+	remoteImageCanvasElemet.width = remoteVideoElement.width * remoteScale;
+	remoteImageCanvasElemet.height = remoteVideoElement.height * remoteScale;
+});
+
+ipcRenderer.on('remote_scale_down',(event,arg)=>{
+	remoteScale = remoteScale + 0.1;
+	remoteImageCanvasElemet.width = remoteVideoElement * remoteScale;
+	remoteImageCanvasElemet.height = remoteVideoElement * remoteScale;
+});
+
 
