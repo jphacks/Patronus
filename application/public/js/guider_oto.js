@@ -117,7 +117,7 @@ ipcRenderer.on('connect_trainee',(event,arg)=>{
 function drawRemote(){
 	const context = remoteImageCanvasElement.getContext('2d');
 	context.clearRect(0,0,remoteImageCanvasElement.width,remoteImageCanvasElement.height);
-	context.drawImage(remoteImageVideoElement,0,0,remoteImageCanvasElement.width,remoteImageCanvasElemet.height);
+	context.drawImage(remoteImageVideoElement,0,0,remoteImageCanvasElement.width,remoteImageCanvasElement.height);
 }
 
 function loopDraw(){
