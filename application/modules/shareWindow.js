@@ -37,29 +37,12 @@ const ShareWindow = function(){
             const url = guiderShareWindow.webContents.getURL();
             socket.emit('updated', {id: id, url: url});
         });
-        guiderShareWindow.webContents.executeJavaScript((
-            function(){
-                
-                let ticking;
-                window.addEventListener('scroll', function(e){
-                  last_known_scroll_position = window.scrollY;
-                  if(!ticking){
-                    window.requestAnimationFrame(function() {
-                        console.log("yo")
-                      ticking = false;
-                    });
-                  }
-                  ticking = true;
-                });
-
-            }
-        ).toString().replace(/function\s*\(\)\{/, "").replace(/}$/,"").trim());
 
         // Renderの読み込みが完了するとidを要請してくるので送る
         ipcMain.on('get-id', (event, arg) => {
           event.sender.send('set-id', id)
         });
-        // guiderShareWindow.webContents.openDevTools();
+        guiderShareWindow.webContents.openDevTools();
 
         ShareWindows[id] = guiderShareWindow;
     }

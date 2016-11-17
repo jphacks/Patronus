@@ -46,90 +46,18 @@ body{
 	<button onclick="load();">Load</button>
 </div>
 
-<pre>
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</pre>
 <script type="text/javascript">
+const {ipcRenderer} = require('electron');
+ipcRenderer.send('get-id', {});
+ipcRenderer.on('set-id', (event, id) => {
+	// console.log(id);
+	document.getElementById("win-id").value = id;
+})
+function load(){
+	let url = document.getElementById("url").value;
+	ipcRenderer.send('openURL', {id: document.getElementById("win-id").value, url: url});
+}
 
-let ticking;
-window.addEventListener('scroll', function(e){
-  last_known_scroll_position = window.scrollY;
-  if(!ticking){
-    window.requestAnimationFrame(function() {
-    	console.log("yo")
-      ticking = false;
-    });
-  }
-  ticking = true;
-});
 
 </script>
 

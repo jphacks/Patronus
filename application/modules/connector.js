@@ -97,14 +97,45 @@ module.exports = class Connector {
                     this.ShareWindow.ShareWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
                 }
             });
+            /* guiderがウィンドウをスクロールするとtraineeもスクロール */
+            ipcMain.on('scroll', (e, data) => {
+                console.log(data.scrollY);
+                if(this.role.role == 'trainee'){
+                    this.ShareWindow.ShareWindows[data.id].webContents.executeJavaScript((
+                        function(){
+                            window.scrollTo(0, data.scrollY);
+                        }
+                    ).toString().replace(/function\s*\(\)\{/, "").replace(/}$/,"").trim());
+                }
+            });
             /* guiderがウィンドウをリサイズするとtraineeもリサイズ */
             socket.on('resize', (data) => {
                 if(this.role.role == 'trainee'){
                     this.ShareWindow.ShareWindows[data.id].setSize(data.size[0], data.size[1], true);
                 }
             });
-            /* guiderがページ遷移したときtraineeもページ遷移 */
+            /* guiderがページ遷移したとき */
             socket.on('updated', (data) => {
+                /* guiderのページにscroll event listener追加 */
+                if(this.role.role == 'guider' && this.ShareWindow.ShareWindows[data.id]){
+                    this.ShareWindow.ShareWindows[data.id].webContents.executeJavaScript((
+                        function(){
+                            const ipcRenderer2 = require('electron').ipcRenderer;
+                            let ticking;
+                            window.addEventListener('scroll', function(e){
+                              if(!ticking){
+                                window.requestAnimationFrame(function() {
+                                    console.log(window.scrollY);
+                                    ipcRenderer2.send('scroll', {scrollY: window.scrollY});
+                                    ticking = false;
+                                });
+                              }
+                              ticking = true;
+                            });
+                        }
+                    ).toString().replace(/function\s*\(\)\{/, "").replace(/}$/,"").trim());
+                }
+                // traineeもページ遷移
                 if(this.role.role == 'trainee' && this.ShareWindow.ShareWindows[data.id]){
                     this.ShareWindow.ShareWindows[data.id].loadURL(data.url);
                 }
