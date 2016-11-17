@@ -102,6 +102,7 @@ module.exports = class Connector {
             });
             socket.on('scroll', (data) => {
                 if(this.role.role == 'trainee' && this.ShareWindow.ShareWindows[data.id]){
+
                     this.ShareWindow.ShareWindows[data.id].webContents.executeJavaScript((
                         function(){
                             window.scrollTo(0, data.scrollY);
@@ -122,12 +123,22 @@ module.exports = class Connector {
                     this.ShareWindow.ShareWindows[data.id].webContents.executeJavaScript((
                         function(){
                             const ipcRenderer2 = require('electron').ipcRenderer;
+                            let win_id;
+                            ipcRenderer2.on('set-id', (event, id) => {
+                                win_id = id;
+                            })
                             let ticking;
+                        }
+                    ).toString().replace(/function\s*\(\)\{/, "").replace(/}$/,"").trim(), function(){
+                        this.ShareWindow.ShareWindows[data.id].webContents.send('set-id', data.id);
+                    });
+                    this.ShareWindow.ShareWindows[data.id].webContents.executeJavaScript((
+                        function(){
                             window.addEventListener('scroll', function(e){
                               if(!ticking){
                                 window.requestAnimationFrame(function() {
                                     console.log(window.scrollY);
-                                    ipcRenderer2.send('scroll', {scrollY: window.scrollY});
+                                    ipcRenderer2.send('scroll', {scrollY: window.scrollY, id: win_id});
                                     ticking = false;
                                 });
                               }
@@ -135,6 +146,7 @@ module.exports = class Connector {
                             });
                         }
                     ).toString().replace(/function\s*\(\)\{/, "").replace(/}$/,"").trim());
+                
                 }
                 // traineeもページ遷移
                 if(this.role.role == 'trainee' && this.ShareWindow.ShareWindows[data.id]){
