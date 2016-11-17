@@ -18,7 +18,7 @@ module.exports = class Connector {
 
     connect() {
         if(!this.socket) {
-            this.socket = io('http://localhost:58100');
+            this.socket = io('http://133.68.112.170:58100');
         }
     }
 
@@ -99,6 +99,9 @@ module.exports = class Connector {
             });
             /* guiderがウィンドウをスクロールするとtraineeもスクロール */
             ipcMain.on('scroll', (e, data) => {
+                socket.emit('scroll', data);
+            });
+            socket.on('scroll', (data) => {
                 console.log(data.scrollY);
                 if(this.role.role == 'trainee'){
                     this.ShareWindow.ShareWindows[data.id].webContents.executeJavaScript((

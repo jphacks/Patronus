@@ -52,7 +52,7 @@ app.on('ready', (err) => {
                 label: 'New Share Window',
                 accelerator: 'Command+N',
                 click: (item, focusedWindow) => {
-                    if(!role.role) {
+                    if(role.role == 'guider') {
                         ShareWindow.createShareWindow(new Date().getTime(), {url:`file://${__dirname}/public/test.html`},connector.socket);
                     }
                 }
