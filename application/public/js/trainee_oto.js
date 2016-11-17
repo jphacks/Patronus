@@ -300,7 +300,7 @@ ipcRenderer.on('re_get_screenshot',(event,arg)=>{
 });
 
 ipcRenderer.on('change_draw_type',(event,arg)=>{
-	if(drawType = "face"){
+	if(drawType == "face"){
 		drawType = "translucent";
 		guiderVideoCanvasElement.style.opacity = "0.5";
 		guiderOpacity = 0.5;

@@ -109,16 +109,29 @@ function setTraineeGlobalShortcut(){
         console.log('CommandOrControl+Alt+O');
     });
 
+    globalShortcutRegister['T'] = globalShortcut.register('CommandOrControl+Alt+T',()=>{
+        mainWindow.webContents.send('change_opacity_up',{});
+        console.log('CommandOrControl+Alt+T');
+    });
+
     globalShortcutRegister['SO'] = globalShortcut.register('CommandOrControl+Alt+Shift+O',()=>{
         mainWindow.webContents.send('change_opacity_down',{});
         console.log('CommandOrControl+Alt+Shift+O');
+    });
 
+    globalShortcutRegister['ST'] = globalShortcut.register('CommandOrControl+Alt+Shift+T',()=>{
+        mainWindow.webContents.send('change_opacity_down',{});
+        console.log('CommandOrControl+Alt+Shift+T');
     });
 
     globalShortcutRegister['J'] = globalShortcut.register('CommandOrControl+Alt+J',()=>{
         mainWindow.webContents.send('change_draw_type',{});
         console.log('CommandOrControl+Alt+J');
+    });
 
+    globalShortcutRegister['F'] = globalShortcut.register('CommandOrControl+Alt+F',()=>{
+        mainWindow.webContents.send('change_draw_type',{});
+        console.log('CommandOrControl+Alt+F');
     });
 
 }
@@ -137,17 +150,33 @@ function setGuiderGlobalShortcut(){
 
     });
 
+    globalShortcutRegister['S'] = globalShortcut.register('CommandOrControl+Alt+S',()=>{
+        mainWindow.webContents.send('remote_scale_up',{});
+        console.log('CommandOrControl+Alt+S');
+
+    });
+
+    globalShortcutRegister['SS'] = globalShortcut.register('CommandOrControl+Alt+Shift+S',()=>{
+        mainWindow.webContents.send('remote_scale_down',{});
+        console.log('CommandOrControl+Alt+Shift+S');
+
+    });
 
 }
 
 
 function clearTraineeGlobalShortcut(){
     globalShortcut.unregister('CommandOrControl+Alt+O');
+    globalShortcut.unregister('CommandOrControl+Alt+T');
     globalShortcut.unregister('CommandOrControl+Alt+Shift+O');
+    globalShortcut.unregister('CommandOrControl+Alt+Shift+T');
     globalShortcut.unregister('CommandOrControl+Alt+J');
+    globalShortcut.unregister('CommandOrControl+Alt+T');
 }
 
 function clearGuiderGlobalShortcut(){
     globalShortcut.unregister('CommandOrControl+Alt+L');
     globalShortcut.unregister('CommandOrControl+Alt+Shift+L');
+    globalShortcut.unregister('CommandOrControl+Alt+S');
+    globalShortcut.unregister('CommandOrControl+Alt+Shift+S');
 }
