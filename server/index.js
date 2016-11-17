@@ -4,7 +4,7 @@ const path = require('path');
 const socketio = require('socket.io');
 const RoomManager = require(path.join(__dirname, 'modules', 'roommanager.js'));
 
-const io = socketio.listen(58100);
+const io = socketio.listen(process.env.PORT || 58100);
 const room_manager = new RoomManager();
 
 
