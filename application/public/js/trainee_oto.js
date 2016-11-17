@@ -215,7 +215,8 @@ window.onload = function(e){
 }
 
 var drawVideo = {};
-var drawType = "translucent";
+//var drawType = "translucent";
+var drawType = "face";
 drawVideo["face"] = function(){
 	const context = guiderVideoCanvasElement.getContext('2d');
 	context.clearRect(0,0,guiderVideoCanvasElement.width,guiderVideoCanvasElement.height);
