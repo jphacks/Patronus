@@ -18,7 +18,7 @@ module.exports = class Connector {
 
     connect() {
         if(!this.socket) {
-            this.socket = io('http://localhost:58100');
+            this.socket = io('http://133.68.112.180:58100');
         }
     }
 
