@@ -8,7 +8,6 @@ const { app, BrowserWindow, Menu, shell } = electron;
 
 const Connector = require('./modules/connector.js');
 
-// const ShareWindows = [];
 const ShareWindow = require('./modules/shareWindow.js')();
 
 const window_builder = require(path.join(__dirname, 'modules', 'windowBuilder.js'));
@@ -53,7 +52,7 @@ app.on('ready', (err) => {
                 label: 'New Share Window',
                 accelerator: 'Command+N',
                 click: (item, focusedWindow) => {
-                    if(role.role == 'guider') {
+                    if(!role.role) {
                         ShareWindow.createShareWindow(new Date().getTime(), {url:`file://${__dirname}/public/test.html`},connector.socket);
                     }
                 }
