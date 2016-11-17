@@ -4,7 +4,7 @@ const electron = require('electron');
 
 const defaultMenu = require('electron-default-menu');
 
-const { app, BrowserWindow, Menu, shell } = electron;
+const { app, BrowserWindow, Menu, shell, globalShortcut } = electron;
 
 const Connector = require('./modules/connector.js');
 
@@ -14,6 +14,8 @@ const ShareWindow = require('./modules/shareWindow.js')();
 const window_builder = require(path.join(__dirname, 'modules', 'windowBuilder.js'));
 
 const expressModule = require('./modules/expressModule.js');
+
+const globalShortcutRegister = {};
 
 expressModule.createLocalHtmlServer();
 
@@ -100,3 +102,32 @@ function windowCloser() {
         connector.changeMainWindow(mainWindow);
     }
 }
+
+function setGlobalShortcut(){
+
+    globalShortcutRegister['up_opacity'] = globalShortcut.register('CommandOrControl+Alt+O',()=>{
+        mainWindow.webContents.send('change_opacity_up',{});
+    });
+
+    globalShortcutRegister['down_opacity'] = globalShortcut.register('CommandOrControl+Alt+Shift+O',()=>{
+        mainWindow.webContents.send('change_opacity_down',{});
+
+    });
+
+    globalShortcutRegister['up_scale'] = globalShortcut.register('CommandOrControl+Alt+L',()=>{
+        mainWindow.webContents.send('remote_scale_up',{});
+
+    });
+
+    globalShortcutRegister['down_scale'] = globalShortcut.register('CommandOrControl+Alt+Shift+L',()=>{
+        mainWindow.webContents.send('remote_scale_down',{});
+
+    });
+
+    globalShortcutRegister['face_mode'] = globalShortcut.register('CommandOrControl+Alt+J',()=>{
+        mainWindow.webContents.send('change_draw_type',{});
+
+    });
+
+}
+
