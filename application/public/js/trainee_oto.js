@@ -136,8 +136,8 @@ class PatronusTraineeManager extends PatronusManager{
 			self.initStreamConnectionEvents(call);
 			patronusManager.startLocalVideo(function(){
 				console.log('answer');
-				console.log(self.localstream);
-				call.answer(self.localstream);
+				console.log(self.localStream);
+				call.answer(self.localStream);
 				self.onPeerCalled(call);
 	
 			});

@@ -14,11 +14,14 @@ module.exports = class Connector {
         this.ShareWindow = ShareWindow;
         this.connect();
         this.setListener();
+
     }
 
     connect() {
         if(!this.socket) {
-            this.socket = io('http://localhost:58100');
+            //this.socket = io('http://133.68.112.180:58100');
+            this.socket = io('https://ng1608patronus.herokuapp.com');
+            // console.log(this.socket);
         }
     }
 

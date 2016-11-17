@@ -4,7 +4,7 @@ const path = require('path');
 const socketio = require('socket.io');
 const RoomManager = require(path.join(__dirname, 'modules', 'roommanager.js'));
 
-const io = socketio.listen(58100);
+const io = socketio.listen(process.env.PORT || 58100);
 const room_manager = new RoomManager();
 
 
@@ -52,4 +52,8 @@ io.sockets.on("connection", (socket) => {
         io.emit('scroll', data);
     });
 
+    socket.on('create_guider_window', (data) => {
+        console.log('create_guider_window', data);
+        socket.to(data.room).emit('create_guider_window', data);
+    });
 });

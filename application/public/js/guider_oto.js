@@ -50,6 +50,7 @@ window.onload = function(e){
 }
 
 ipcRenderer.on('connect_trainee',(event,arg)=>{
+	console.log('connect_trainee ...');
 	traineeScreenWidth = arg.width;
 	traineeScreenHeight = arg.height;
 
