@@ -21,7 +21,7 @@ module.exports = class Connector {
         if(!this.socket) {
             //this.socket = io('http://133.68.112.180:58100');
             this.socket = io('https://ng1608patronus.herokuapp.com');
-            console.log(this.socket);
+            // console.log(this.socket);
         }
     }
 
