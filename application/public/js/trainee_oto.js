@@ -9,6 +9,7 @@ var localVideoElement = null
 var guiderCanvasElement = null;
 var guiderVideoCanvasElement = null;
 var annotationModule = null;
+var guiderOpacity = 0.5;
 var ctracker = new clm.tracker();
 ctracker.init(pModel);
   
@@ -302,10 +303,23 @@ ipcRenderer.on('change_draw_type',(event,arg)=>{
 	if(drawType = "face"){
 		drawType = "translucent";
 		guiderVideoCanvasElement.style.opacity = "0.5";
+		guiderOpacity = 0.5;
 	}else{
 		drawType = "face";
 		guiderVideoCanvasElement.style.opacity = "1.0";
+		guiderOpacity = 1.0;
 	}
 });
+
+ipcRenderer.on('change_opacity_up',(event,arg)=>{
+	guiderOpacity = guiderOpacity - 0.1;
+	guiderVideoCanvasElement.style.opacity = String(guiderOpacity);
+});
+
+ipcRenderer.on('change_opacity_down',(event,arg)=>{
+	guiderOpacity = guiderOpacity + 0.1;
+	guiderVideoCanvasElement.style.opacity = String(guiderOpacity);
+});
+
 
 
