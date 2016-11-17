@@ -52,4 +52,8 @@ io.sockets.on("connection", (socket) => {
         io.emit('scroll', data);
     });
 
+    socket.on('create_guider_window', (data) => {
+        console.log('create_guider_window', data);
+        socket.to(data.room).emit('create_guider_window', data);
+    });
 });
