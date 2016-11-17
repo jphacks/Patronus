@@ -215,9 +215,10 @@ window.onload = function(e){
 }
 
 var drawVideo = {};
-//var drawType = "translucent";
-var drawType = "face";
+var drawType = "translucent";
+//var drawType = "face";
 drawVideo["face"] = function(){
+	var positions = ctracker.getCurrentPosition();
 	const context = guiderVideoCanvasElement.getContext('2d');
 	context.clearRect(0,0,guiderVideoCanvasElement.width,guiderVideoCanvasElement.height);
 	const w = guiderVideoCanvasElement.width;
