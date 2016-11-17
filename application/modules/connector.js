@@ -81,7 +81,6 @@ module.exports = class Connector {
             /* guider,traineeに応じたShareWindowを作る */
             socket.on('createShareWindow', (data) => {
                 console.log(data);
-                this.ShareWindow.createGuiderShareWindow(data.id, data.opt, socket);
                 if(this.role.role == 'guider'){ this.ShareWindow.createGuiderShareWindow(data.id, data.opt, socket); }
                 if(this.role.role == 'trainee'){ this.ShareWindow.createTraineeShareWindow(data.id, data.opt); }
             });
@@ -102,8 +101,7 @@ module.exports = class Connector {
                 socket.emit('scroll', data);
             });
             socket.on('scroll', (data) => {
-                console.log(data.scrollY);
-                if(this.role.role == 'trainee'){
+                if(this.role.role == 'trainee' && this.ShareWindow.ShareWindows[data.id]){
                     this.ShareWindow.ShareWindows[data.id].webContents.executeJavaScript((
                         function(){
                             window.scrollTo(0, data.scrollY);
