@@ -101,13 +101,8 @@ module.exports = class Connector {
                 socket.emit('scroll', data);
             });
             socket.on('scroll', (data) => {
-                if(this.role.role == 'trainee' && this.ShareWindow.ShareWindows[data.id]){
-
-                    this.ShareWindow.ShareWindows[data.id].webContents.executeJavaScript((
-                        function(){
-                            window.scrollTo(0, data.scrollY);
-                        }
-                    ).toString().replace(/function\s*\(\)\{/, "").replace(/}$/,"").trim());
+                if(this.role.role == 'trainee'){
+                    this.ShareWindow.ShareWindows[data.id].webContents.send('scroll-child', data.scrollY);
                 }
             });
             /* guiderがウィンドウをリサイズするとtraineeもリサイズ */
@@ -129,7 +124,7 @@ module.exports = class Connector {
                             })
                             let ticking;
                         }
-                    ).toString().replace(/function\s*\(\)\{/, "").replace(/}$/,"").trim(), function(){
+                    ).toString().replace(/function\s*\(\)\{/, "").replace(/}$/,"").trim(), () => {
                         this.ShareWindow.ShareWindows[data.id].webContents.send('set-id', data.id);
                     });
                     this.ShareWindow.ShareWindows[data.id].webContents.executeJavaScript((
@@ -146,11 +141,20 @@ module.exports = class Connector {
                             });
                         }
                     ).toString().replace(/function\s*\(\)\{/, "").replace(/}$/,"").trim());
-                
                 }
                 // traineeもページ遷移
                 if(this.role.role == 'trainee' && this.ShareWindow.ShareWindows[data.id]){
                     this.ShareWindow.ShareWindows[data.id].loadURL(data.url);
+                    this.ShareWindow.ShareWindows[data.id].webContents.executeJavaScript((
+                        function(){
+                            const ipcRenderer2 = require('electron').ipcRenderer;
+                            ipcRenderer2.on('scroll-child', (event, scrollY) => {
+                                window.scrollTo(0, scrollY);                                
+                            });
+                        }
+                    ).toString().replace(/function\s*\(\)\{/, "").replace(/}$/,"").trim(), () => {
+                        this.ShareWindow.ShareWindows[data.id].webContents.send('set-id', data.id);
+                    });
                 }
             });
             /**
