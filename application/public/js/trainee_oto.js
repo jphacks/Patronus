@@ -8,7 +8,9 @@ var guiderVideoElement = null;
 var localVideoElement = null
 var guiderCanvasElement = null;
 var guiderVideoCanvasElement = null;
+var guiderVideoFaceCanvasElement = null;
 var annotationModule = null;
+var guiderOpacity = 0.5;
 var ctracker = new clm.tracker();
 ctracker.init(pModel);
   
@@ -136,8 +138,8 @@ class PatronusTraineeManager extends PatronusManager{
 			self.initStreamConnectionEvents(call);
 			patronusManager.startLocalVideo(function(){
 				console.log('answer');
-				console.log(self.localstream);
-				call.answer(self.localstream);
+				console.log(self.localStream);
+				call.answer(self.localStream);
 				self.onPeerCalled(call);
 	
 			});
@@ -160,6 +162,7 @@ window.onload = function(e){
 	guiderVideoElement = document.createElement('video');
 	localVideoElement = document.createElement('video');
 	guiderVideoCanvasElement = document.createElement('canvas');
+	guiderVideoFaceCanvasElement = document.createElement('canvas');
 	guiderCanvasElement = document.createElement('canvas');
 
 	guiderVideoElement.width = screenWidth;
@@ -190,6 +193,16 @@ window.onload = function(e){
 	guiderVideoCanvasElement.style.opacity = 0.5;
 	guiderVideoCanvasElement.style.zIndex = 0;
 
+	guiderVideoFaceCanvasElement.width = screenWidth;
+	guiderVideoFaceCanvasElement.height = screenHeight;
+	guiderVideoFaceCanvasElement.style.width = String(screenWidth)+'px';
+	guiderVideoFaceCanvasElement.style.height = String(screenHeight)+'px';
+	guiderVideoFaceCanvasElement.style.backgroundColor = 'rgba(0,0,0,0)';
+	guiderVideoFaceCanvasElement.id = 'remote_face_video_canvas';
+	guiderVideoFaceCanvasElement.style.position="fixed";
+	guiderVideoFaceCanvasElement.style.opacity = 0.0;
+	guiderVideoFaceCanvasElement.style.zIndex = 0;
+
 	guiderCanvasElement.width = screenWidth;
 	guiderCanvasElement.height = screenHeight;
 	guiderCanvasElement.style.width = String(screenWidth)+'px';
@@ -200,6 +213,7 @@ window.onload = function(e){
 	guiderCanvasElement.style.zIndex = 1;
 
 	document.body.appendChild(guiderVideoCanvasElement);
+	document.body.appendChild(guiderVideoFaceCanvasElement);
 	document.body.appendChild(guiderCanvasElement);
 	//document.body.appendChild(localVideoElement);
 	
@@ -215,10 +229,12 @@ window.onload = function(e){
 
 var drawVideo = {};
 var drawType = "translucent";
+//var drawType = "face";
 drawVideo["face"] = function(){
-	const context = guiderVideoCanvasElement.getContext('2d');
-	context.clearRect(0,0,guiderVideoCanvasElement.width,guiderVideoCanvasElement.height);
-	const w = guiderVideoCanvasElement.width;
+	const positions = ctracker.getCurrentPosition();
+	const context = guiderVideoFaceCanvasElement.getContext('2d');
+	context.clearRect(0,0,guiderVideoFaceCanvasElement.width,guiderVideoFaceCanvasElement.height);
+	const w = guiderVideoFaceCanvasElement.width;
 
 	if(positions){
 		console.log('draw');
@@ -263,11 +279,11 @@ drawVideo["face"] = function(){
 	    context.clip();
 	    context.setTransform(-1,0,0,1,0,0);
 
-	    context.drawImage(guiderVideoElement, 0, 0, -guiderVideoCanvasElement.width, guiderVideoCanvasElement.height);
+	    context.drawImage(guiderVideoElement, 0, 0, -guiderVideoFaceCanvasElement.width, guiderVideoFaceCanvasElement.height);
 	    context.restore();
 	}else{
 		console.log('undraw');
-	    context.drawImage(guiderVideoElement, 0, 0, -guiderVideoCanvasElement.width, guiderVideoCanvasElement.height);		
+	    context.drawImage(guiderVideoElement, 0, 0, -guiderVideoFaceCanvasElement.width, guiderVideoFaceCanvasElement.height);		
 	}
 }
 
@@ -299,13 +315,35 @@ ipcRenderer.on('re_get_screenshot',(event,arg)=>{
 });
 
 ipcRenderer.on('change_draw_type',(event,arg)=>{
-	if(drawType = "face"){
+	if(drawType == "face"){
 		drawType = "translucent";
-		guiderVideoCanvasElement.style.opacity = "0.5";
+		guiderVideoCanvasElement.style.opacity = String(guiderOpacity);
+		guiderVideoFaceCanvasElement.style.opacity = "0.0";
+		guiderOpacity = 0.5;
 	}else{
 		drawType = "face";
-		guiderVideoCanvasElement.style.opacity = "1.0";
+		guiderVideoFaceCanvasElement.style.opacity 	= String(guiderOpacity);
+		guiderVideoCanvasElement.style.opacity 	= '0.0';
+		guiderOpacity = 0.5;
 	}
 });
 
+ipcRenderer.on('change_opacity_up',(event,arg)=>{
+	guiderOpacity = guiderOpacity - 0.1;
+	if(drawType == 'face'){
+		guiderVideoFaceCanvasElement.style.opacity = String(guiderOpacity);
+	}else{
+		guiderVideoCanvasElement.style.opacity = String(guiderOpacity);
+	}
+});		
 
+ipcRenderer.on('change_opacity_down',(event,arg)=>{
+	guiderOpacity = guiderOpacity + 0.1;
+	if(drawType == 'face'){
+		guiderVideoFaceCanvasElement.style.opacity = String(guiderOpacity);
+	}else{
+		guiderVideoCanvasElement.style.opacity = String(guiderOpacity);
+	}
+});
+
+	
