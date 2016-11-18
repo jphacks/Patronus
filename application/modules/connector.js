@@ -112,7 +112,7 @@ module.exports = class Connector {
             socket.on('resize', (data) => {
                 if(this.role.role == 'trainee'){
                     let {width, height} = require('electron').electron.screen.getPrimaryDisplay().workAreaSize;
-                    this.ShareWindow.ShareWindows[data.id].setSize(data.size[0]*width/data.windowSize[0], data.size[1]*height/data.windowSize[1], true);
+                    this.ShareWindow.ShareWindows[data.id].setSize(Math.round(data.size[0]*width/data.windowSize[0]), Math.round(data.size[1]*height/data.windowSize[1]), true);
                 }
             });
             /* guiderがページ遷移したとき */
