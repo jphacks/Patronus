@@ -4,20 +4,19 @@ const electron = require('electron');
 
 const defaultMenu = require('electron-default-menu');
 
-const { app, BrowserWindow, Menu, shell } = electron;
+const { app, BrowserWindow, Menu, shell, globalShortcut } = electron;
 
 const Connector = require('./modules/connector.js');
 
-let guiderShareWindows = {};
-let traineeShareWindows = {};
-const ShareWindow = require('./modules/shareWindow.js')(guiderShareWindows, traineeShareWindows);
+const ShareWindow = require('./modules/shareWindow.js')();
 
 const window_builder = require(path.join(__dirname, 'modules', 'windowBuilder.js'));
 
 const expressModule = require('./modules/expressModule.js');
 
-expressModule.createLocalHtmlServer();
+const globalShortcutRegister = {};
 
+expressModule.createLocalHtmlServer();
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -25,6 +24,7 @@ expressModule.createLocalHtmlServer();
 let mainWindow;
 
 let role = {role: null};
+let screenSize = {};
 
 let connector = null;
 
@@ -33,8 +33,8 @@ let connector = null;
 // Some APIs can only be used after this event occurs.
 app.on('ready', (err) => {
     mainWindow = window_builder.createMainWindow(windowCloser);
-
-    connector = new Connector(mainWindow, guiderShareWindows, traineeShareWindows, role, ShareWindow);
+    screenSize = electron.screen.getPrimaryDisplay().workAreaSize;
+    connector = new Connector(mainWindow, role, screenSize, ShareWindow);
 
 
     const menu = defaultMenu(app, shell);
@@ -54,8 +54,8 @@ app.on('ready', (err) => {
                 label: 'New Share Window',
                 accelerator: 'Command+N',
                 click: (item, focusedWindow) => {
-                    if(role.role) {
-                        ShareWindow.createGuiderShareWindow(`file://${__dirname}/public/test.html`, new Date().getTime(), connector.socket);
+                    if(role.role == 'guider') {
+                        ShareWindow.createShareWindow(new Date().getTime(), {url:`file://${__dirname}/public/test.html`}, screenSize, connector.socket);
                     }
                 }
             },
@@ -64,8 +64,8 @@ app.on('ready', (err) => {
     });
 
     Menu.setApplicationMenu(Menu.buildFromTemplate(menu));
-
-
+    setTraineeGlobalShortcut();
+    setGuiderGlobalShortcut();
 });
 
 // Quit when all windows are closed.
@@ -100,4 +100,83 @@ function windowCloser() {
         mainWindow = window_builder.createVideoWindow(role, windowCloser);
         connector.changeMainWindow(mainWindow);
     }
+}
+
+function setTraineeGlobalShortcut(){
+
+    globalShortcutRegister['O'] = globalShortcut.register('CommandOrControl+Alt+O',()=>{
+        mainWindow.webContents.send('change_opacity_up',{});
+        console.log('CommandOrControl+Alt+O');
+    });
+
+    globalShortcutRegister['T'] = globalShortcut.register('CommandOrControl+Alt+T',()=>{
+        mainWindow.webContents.send('change_opacity_up',{});
+        console.log('CommandOrControl+Alt+T');
+    });
+
+    globalShortcutRegister['SO'] = globalShortcut.register('CommandOrControl+Alt+Shift+O',()=>{
+        mainWindow.webContents.send('change_opacity_down',{});
+        console.log('CommandOrControl+Alt+Shift+O');
+    });
+
+    globalShortcutRegister['ST'] = globalShortcut.register('CommandOrControl+Alt+Shift+T',()=>{
+        mainWindow.webContents.send('change_opacity_down',{});
+        console.log('CommandOrControl+Alt+Shift+T');
+    });
+
+    globalShortcutRegister['J'] = globalShortcut.register('CommandOrControl+Alt+J',()=>{
+        mainWindow.webContents.send('change_draw_type',{});
+        console.log('CommandOrControl+Alt+J');
+    });
+
+    globalShortcutRegister['F'] = globalShortcut.register('CommandOrControl+Alt+F',()=>{
+        mainWindow.webContents.send('change_draw_type',{});
+        console.log('CommandOrControl+Alt+F');
+    });
+
+}
+
+function setGuiderGlobalShortcut(){
+
+    globalShortcutRegister['L'] = globalShortcut.register('CommandOrControl+Alt+L',()=>{
+        mainWindow.webContents.send('remote_scale_up',{});
+        console.log('CommandOrControl+Alt+L');
+
+    });
+
+    globalShortcutRegister['SL'] = globalShortcut.register('CommandOrControl+Alt+Shift+L',()=>{
+        mainWindow.webContents.send('remote_scale_down',{});
+        console.log('CommandOrControl+Alt+Shift+L');
+
+    });
+
+    globalShortcutRegister['S'] = globalShortcut.register('CommandOrControl+Alt+S',()=>{
+        mainWindow.webContents.send('remote_scale_up',{});
+        console.log('CommandOrControl+Alt+S');
+
+    });
+
+    globalShortcutRegister['SS'] = globalShortcut.register('CommandOrControl+Alt+Shift+S',()=>{
+        mainWindow.webContents.send('remote_scale_down',{});
+        console.log('CommandOrControl+Alt+Shift+S');
+
+    });
+
+}
+
+
+function clearTraineeGlobalShortcut(){
+    globalShortcut.unregister('CommandOrControl+Alt+O');
+    globalShortcut.unregister('CommandOrControl+Alt+T');
+    globalShortcut.unregister('CommandOrControl+Alt+Shift+O');
+    globalShortcut.unregister('CommandOrControl+Alt+Shift+T');
+    globalShortcut.unregister('CommandOrControl+Alt+J');
+    globalShortcut.unregister('CommandOrControl+Alt+T');
+}
+
+function clearGuiderGlobalShortcut(){
+    globalShortcut.unregister('CommandOrControl+Alt+L');
+    globalShortcut.unregister('CommandOrControl+Alt+Shift+L');
+    globalShortcut.unregister('CommandOrControl+Alt+S');
+    globalShortcut.unregister('CommandOrControl+Alt+Shift+S');
 }

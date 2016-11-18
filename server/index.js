@@ -4,7 +4,7 @@ const path = require('path');
 const socketio = require('socket.io');
 const RoomManager = require(path.join(__dirname, 'modules', 'roommanager.js'));
 
-const io = socketio.listen(58100);
+const io = socketio.listen(process.env.PORT || 58100);
 const room_manager = new RoomManager();
 
 
@@ -32,29 +32,26 @@ io.sockets.on("connection", (socket) => {
         }
     });
 
-    socket.on('createGuiderShareWindow', (data) => {
-        console.log(data)
-    io.emit('createGuiderShareWindow', data);
+    socket.on('createShareWindow', (data) => {
+        console.log('create_window: ', data);
+        io.emit('createShareWindow', data);
     });
-    socket.on('createTraineeShareWindow', (data) => {
-        console.log(data)
-    io.emit('createTraineeShareWindow', data);
-    });
-    socket.on('closeWindow', (data) => {
-    io.emit('closeWindow', data);
+    socket.on('closeShareWindow', (data) => {
+        io.emit('closeShareWindow', data);
     });
     socket.on('move', (data) => {
-    io.emit('move', data);
+        io.emit('move', data);
     });
     socket.on('resize', (data) => {
-    io.emit('resize', data);
+        io.emit('resize', data);
     });
     socket.on('updated', (data) => {
-    io.emit('updated', data);
+        io.emit('updated', data);
     });
     socket.on('scroll', (data) => {
-    io.emit('scroll', data);
+        io.emit('scroll', data);
     });
+
     socket.on('create_guider_window', (data) => {
         console.log('create_guider_window', data);
         socket.to(data.room).emit('create_guider_window', data);

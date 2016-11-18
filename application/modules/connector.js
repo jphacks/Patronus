@@ -7,20 +7,22 @@ const fs = require('fs');
 const Datauri = require('datauri');
 
 module.exports = class Connector {
-    constructor(mainWindow, guiderShareWindows, traineeShareWindows, role, ShareWindow) {
+    constructor(mainWindow, role, screenSize, ShareWindow) {
         this.socket = null;
         this.mainWindow = mainWindow;
-        this.guiderShareWindows = guiderShareWindows;
-        this.traineeShareWindows = traineeShareWindows;
         this.role = role;
+        this.screenSize = screenSize;
         this.ShareWindow = ShareWindow;
         this.connect();
         this.setListener();
+
     }
 
     connect() {
         if(!this.socket) {
-            this.socket = io('http://192.168.90.39:58100');
+            //this.socket = io('http://133.68.112.180:58100');
+            this.socket = io('https://ng1608patronus.herokuapp.com');
+            // console.log(this.socket);
         }
     }
 
@@ -72,40 +74,95 @@ module.exports = class Connector {
                 console.error('error', data.body);
             });
 
-            /* guiderが最初にURLを開いたときtraineeでも開く */
+
+
+
+            /* guiderが最初にURLを開くとき */
             ipcMain.on('openURL', (e, data) => {
-                this.guiderShareWindows[data.id].loadURL(data.url);
+                if(this.role.role == 'guider'){}
+                this.ShareWindow.ShareWindows[data.id].loadURL(data.url);
             });
-            /* guiderShareWindowが作られたときにtraineeShareWindowを作る */
-            socket.on('createGuiderShareWindow', (data) => {
-                console.log(this.role.role);
+            /* guider,traineeに応じたShareWindowを作る */
+            socket.on('createShareWindow', (data) => {
                 console.log(data);
-                this.guiderShareWindows[data.opt.id] = data.guider;
-                if(this.role.role == 'trainee'){ this.ShareWindow.createTraineeShareWindow(data.opt, socket); }
-            });
-            socket.on('createTraineeShareWindow', (data) => {
-                console.log(this.role.role);
-                console.log(data);
-                this.traineeShareWindows[data.id] = data.trainee;
+                if(this.role.role == 'guider'){ this.ShareWindow.createGuiderShareWindow(data.id, data.opt, data.screenSize, socket); }
+                if(this.role.role == 'trainee'){ this.ShareWindow.createTraineeShareWindow(data.id, data.opt); }
             });
             /* guiderがウィンドウを閉じるとtraineeも閉じる */
-            socket.on('closeWindow', (data) => {
-                if(this.traineeShareWindows[data.id] != null){ this.traineeShareWindows[data.id].close(); }
+            socket.on('closeShareWindow', (data) => {
+                if(this.ShareWindow.ShareWindows[data.id] != null){
+                    this.ShareWindow.ShareWindows[data.id].close();
+                }
             });
             /* guiderがウィンドウを動かすとtraineeも動く */
             socket.on('move', (data) => {
-                console.log(this.traineeShareWindows[data.id])
-                if(this.traineeShareWindows[data.id]){
-                    this.traineeShareWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
+                console.log(this.screenSize.width, this.screenSize.height);
+                console.log(data.screenSize.width, data.screenSize.height)
+                if(this.role.role == 'trainee'){
+                    this.ShareWindow.ShareWindows[data.id].setPosition(Math.round(data.pos[0]*this.screenSize.width/data.screenSize.width), Math.round(data.pos[1]*this.screenSize.height/data.screenSize.height), true);
+                }
+            });
+            /* guiderがウィンドウをスクロールするとtraineeもスクロール */
+            ipcMain.on('scroll', (e, data) => {
+                socket.emit('scroll', data);
+            });
+            socket.on('scroll', (data) => {
+                if(this.role.role == 'trainee'){
+                    this.ShareWindow.ShareWindows[data.id].webContents.send('scroll-child', data.scrollY);
                 }
             });
             /* guiderがウィンドウをリサイズするとtraineeもリサイズ */
             socket.on('resize', (data) => {
-                this.traineeShareWindows[data.id].setSize(data.size[0], data.size[1], true);
+                if(this.role.role == 'trainee'){
+                    let {width, height} = require('electron').electron.screen.getPrimaryDisplay().workAreaSize;
+                    this.ShareWindow.ShareWindows[data.id].setSize(data.size[0], data.size[1], true);
+                }
             });
-            /* guiderがページ遷移したときtraineeもページ遷移 */
+            /* guiderがページ遷移したとき */
             socket.on('updated', (data) => {
-                // this.traineeShareWindows[data.id].loadURL(data.url);
+                /* guiderのページにscroll event listener追加 */
+                if(this.role.role == 'guider' && this.ShareWindow.ShareWindows[data.id]){
+                    this.ShareWindow.ShareWindows[data.id].webContents.executeJavaScript((
+                        function(){
+                            const ipcRenderer2 = require('electron').ipcRenderer;
+                            let win_id;
+                            ipcRenderer2.on('set-id', (event, id) => {
+                                win_id = id;
+                            })
+                            let ticking;
+                        }
+                    ).toString().replace(/function\s*\(\)\{/, "").replace(/}$/,"").trim(), () => {
+                        this.ShareWindow.ShareWindows[data.id].webContents.send('set-id', data.id);
+                    });
+                    this.ShareWindow.ShareWindows[data.id].webContents.executeJavaScript((
+                        function(){
+                            window.addEventListener('scroll', function(e){
+                              if(!ticking){
+                                window.requestAnimationFrame(function() {
+                                    console.log(window.scrollY);
+                                    ipcRenderer2.send('scroll', {scrollY: window.scrollY, id: win_id});
+                                    ticking = false;
+                                });
+                              }
+                              ticking = true;
+                            });
+                        }
+                    ).toString().replace(/function\s*\(\)\{/, "").replace(/}$/,"").trim());
+                }
+                // traineeもページ遷移
+                if(this.role.role == 'trainee' && this.ShareWindow.ShareWindows[data.id]){
+                    this.ShareWindow.ShareWindows[data.id].loadURL(data.url);
+                    this.ShareWindow.ShareWindows[data.id].webContents.executeJavaScript((
+                        function(){
+                            const ipcRenderer2 = require('electron').ipcRenderer;
+                            ipcRenderer2.on('scroll-child', (event, scrollY) => {
+                                window.scrollTo(0, scrollY);                                
+                            });
+                        }
+                    ).toString().replace(/function\s*\(\)\{/, "").replace(/}$/,"").trim(), () => {
+                        this.ShareWindow.ShareWindows[data.id].webContents.send('set-id', data.id);
+                    });
+                }
             });
             /**
              * video window edit by kyoshida
