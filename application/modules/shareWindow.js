@@ -28,7 +28,7 @@ const ShareWindow = function(){
             guiderShareWindow = null;
         });
         guiderShareWindow.on('move', () => {
-            socket.emit('move', {id: id, pos: guiderShareWindow.getPosition(), parentScreenSize: screenSize});
+            socket.emit('move', {id: id, pos: guiderShareWindow.getPosition(), screenSize: screenSize});
         });
         guiderShareWindow.on('resize', () => {
             socket.emit('resize', {id: id, size: guiderShareWindow.getSize()});

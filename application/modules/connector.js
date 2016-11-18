@@ -93,6 +93,8 @@ module.exports = class Connector {
             });
             /* guiderがウィンドウを動かすとtraineeも動く */
             socket.on('move', (data) => {
+                console.log(this.screenSize.width, this.screenSize.height);
+                console.log(data.screenSize.width, data.screenSize.height)
                 if(this.role.role == 'trainee'){
                     this.ShareWindow.ShareWindows[data.id].setPosition(data.pos[0]*this.screenSize.width/data.screenSize.width, data.pos[1]*this.screenSize.height/data.screenSize.height, true);
                 }
