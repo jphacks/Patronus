@@ -18,7 +18,7 @@ const ShareWindow = function(){
             height: 600,
             minWidth:100,
             minHeight: 50,
-            alwaysOnTop: true,
+            // alwaysOnTop: true,
             darkTheme: true
         });
         guiderShareWindow.loadURL(opt.url);
@@ -42,7 +42,7 @@ const ShareWindow = function(){
         ipcMain.on('get-id', (event, arg) => {
           event.sender.send('set-id', id)
         });
-        guiderShareWindow.webContents.openDevTools();
+        // guiderShareWindow.webContents.openDevTools();
 
         ShareWindows[id] = guiderShareWindow;
     }
