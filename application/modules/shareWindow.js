@@ -3,13 +3,13 @@ const BrowserWindow = require('electron').BrowserWindow;
 
 
 const ShareWindow = function(){
-    const ShareWindows = {}
+    const ShareWindows = {};
 
-    function createShareWindow(id, opt, socket){
-        socket.emit('createShareWindow', {id: id, opt: opt});
+    function createShareWindow(id, opt, screenSize, socket){
+        socket.emit('createShareWindow', {id: id, opt: opt, screenSize: screenSize});
     }
 
-    function createGuiderShareWindow(id, opt, socket){
+    function createGuiderShareWindow(id, opt, screenSize, socket){
         let guiderShareWindow = new BrowserWindow({
             // parent: mainWindow,
             x: 0,
@@ -28,7 +28,7 @@ const ShareWindow = function(){
             guiderShareWindow = null;
         });
         guiderShareWindow.on('move', () => {
-            socket.emit('move', {id: id, pos: guiderShareWindow.getPosition()});
+            socket.emit('move', {id: id, pos: guiderShareWindow.getPosition(), screenSize: screenSize});
         });
         guiderShareWindow.on('resize', () => {
             socket.emit('resize', {id: id, size: guiderShareWindow.getSize()});
@@ -36,13 +36,13 @@ const ShareWindow = function(){
         guiderShareWindow.on('page-title-updated', (e, title) => {
             const url = guiderShareWindow.webContents.getURL();
             socket.emit('updated', {id: id, url: url});
-        })
+        });
 
         // Renderの読み込みが完了するとidを要請してくるので送る
         ipcMain.on('get-id', (event, arg) => {
           event.sender.send('set-id', id)
         });
-        // guiderShareWindow.webContents.openDevTools();
+        guiderShareWindow.webContents.openDevTools();
 
         ShareWindows[id] = guiderShareWindow;
     }
