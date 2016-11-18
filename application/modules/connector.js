@@ -96,7 +96,7 @@ module.exports = class Connector {
                 console.log(this.screenSize.width, this.screenSize.height);
                 console.log(data.screenSize.width, data.screenSize.height)
                 if(this.role.role == 'trainee'){
-                    this.ShareWindow.ShareWindows[data.id].setPosition(data.pos[0]*this.screenSize.width/data.screenSize.width, data.pos[1]*this.screenSize.height/data.screenSize.height, true);
+                    this.ShareWindow.ShareWindows[data.id].setPosition(Math.round(data.pos[0]*this.screenSize.width/data.screenSize.width), Math.round(data.pos[1]*this.screenSize.height/data.screenSize.height), true);
                 }
             });
             /* guiderがウィンドウをスクロールするとtraineeもスクロール */
@@ -112,7 +112,7 @@ module.exports = class Connector {
             socket.on('resize', (data) => {
                 if(this.role.role == 'trainee'){
                     let {width, height} = require('electron').electron.screen.getPrimaryDisplay().workAreaSize;
-                    this.ShareWindow.ShareWindows[data.id].setSize(Math.round(data.size[0]*width/data.windowSize[0]), Math.round(data.size[1]*height/data.windowSize[1]), true);
+                    this.ShareWindow.ShareWindows[data.id].setSize(data.size[0], data.size[1], true);
                 }
             });
             /* guiderがページ遷移したとき */
