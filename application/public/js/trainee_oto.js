@@ -200,7 +200,7 @@ window.onload = function(e){
 	guiderVideoFaceCanvasElement.style.backgroundColor = 'rgba(0,0,0,0)';
 	guiderVideoFaceCanvasElement.id = 'remote_face_video_canvas';
 	guiderVideoFaceCanvasElement.style.position="fixed";
-	guiderVideoFaceCanvasElement.style.opacity = 0.5;
+	guiderVideoFaceCanvasElement.style.opacity = 0.0;
 	guiderVideoFaceCanvasElement.style.zIndex = 0;
 
 	guiderCanvasElement.width = screenWidth;
@@ -228,7 +228,7 @@ window.onload = function(e){
 }
 
 var drawVideo = {};
-//var drawType = "translucent";
+var drawType = "translucent";
 var drawType = "face";
 drawVideo["face"] = function(){
 	const positions = ctracker.getCurrentPosition();
