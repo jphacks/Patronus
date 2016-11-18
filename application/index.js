@@ -23,6 +23,7 @@ expressModule.createLocalHtmlServer();
 let mainWindow;
 
 let role = {role: null};
+let screenSize = {};
 
 let connector = null;
 
@@ -31,8 +32,8 @@ let connector = null;
 // Some APIs can only be used after this event occurs.
 app.on('ready', (err) => {
     mainWindow = window_builder.createMainWindow(windowCloser);
-
-    connector = new Connector(mainWindow, role, ShareWindow);
+    screenSize = electron.screen.getPrimaryDisplay().workAreaSize;
+    connector = new Connector(mainWindow, role, screenSize, ShareWindow);
 
 
     const menu = defaultMenu(app, shell);
@@ -53,7 +54,7 @@ app.on('ready', (err) => {
                 accelerator: 'Command+N',
                 click: (item, focusedWindow) => {
                     if(role.role == 'guider') {
-                        ShareWindow.createShareWindow(new Date().getTime(), {url:`file://${__dirname}/public/test.html`},connector.socket);
+                        ShareWindow.createShareWindow(new Date().getTime(), {url:`file://${__dirname}/public/test.html`}, screenSize, connector.socket);
                     }
                 }
             },

@@ -7,10 +7,11 @@ const fs = require('fs');
 const Datauri = require('datauri');
 
 module.exports = class Connector {
-    constructor(mainWindow, role, ShareWindow) {
+    constructor(mainWindow, role, screenSize, ShareWindow) {
         this.socket = null;
         this.mainWindow = mainWindow;
         this.role = role;
+        this.screenSize = screenSize;
         this.ShareWindow = ShareWindow;
         this.connect();
         this.setListener();
@@ -93,7 +94,7 @@ module.exports = class Connector {
             /* guiderがウィンドウを動かすとtraineeも動く */
             socket.on('move', (data) => {
                 if(this.role.role == 'trainee'){
-                    this.ShareWindow.ShareWindows[data.id].setPosition(data.pos[0], data.pos[1], true);
+                    this.ShareWindow.ShareWindows[data.id].setPosition(data.pos[0]*this.screenSize.width/data.screenSize.width, data.pos[1]*this.screenSize.height/data.screenSize.height, true);
                 }
             });
             /* guiderがウィンドウをスクロールするとtraineeもスクロール */
@@ -108,7 +109,8 @@ module.exports = class Connector {
             /* guiderがウィンドウをリサイズするとtraineeもリサイズ */
             socket.on('resize', (data) => {
                 if(this.role.role == 'trainee'){
-                    this.ShareWindow.ShareWindows[data.id].setSize(data.size[0], data.size[1], true);
+                    let {width, height} = require('electron').electron.screen.getPrimaryDisplay().workAreaSize;
+                    this.ShareWindow.ShareWindows[data.id].setSize(data.size[0]*width/data.windowSize[0], data.size[1]*height/data.windowSize[1], true);
                 }
             });
             /* guiderがページ遷移したとき */
