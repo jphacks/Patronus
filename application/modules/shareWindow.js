@@ -5,7 +5,7 @@ const BrowserWindow = require('electron').BrowserWindow;
 const ShareWindow = function(){
     const ShareWindows = {};
 
-    function createShareWindow(id, opt, screenSize){
+    function createShareWindow(id, opt, screenSize, socket){
         socket.emit('createShareWindow', {id: id, opt: opt, screenSize: screenSize});
     }
 
