@@ -54,7 +54,7 @@ app.on('ready', (err) => {
                 accelerator: 'Command+N',
                 click: (item, focusedWindow) => {
                     if(role.role == 'guider') {
-                        ShareWindow.createShareWindow(new Date().getTime(), {url:`file://${__dirname}/public/test.html`}, screenSize, connector.socket);
+                        ShareWindow.createShareWindow(new Date().getTime(), {url:`file://${__dirname}/public/test.html`}, screenSize);
                     }
                 }
             },

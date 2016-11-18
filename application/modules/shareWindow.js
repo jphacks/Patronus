@@ -5,8 +5,8 @@ const BrowserWindow = require('electron').BrowserWindow;
 const ShareWindow = function(){
     const ShareWindows = {};
 
-    function createShareWindow(id, opt, socket){
-        socket.emit('createShareWindow', {id: id, opt: opt});
+    function createShareWindow(id, opt, screenSize){
+        socket.emit('createShareWindow', {id: id, opt: opt, screenSize: screenSize});
     }
 
     function createGuiderShareWindow(id, opt, screenSize, socket){
@@ -28,7 +28,7 @@ const ShareWindow = function(){
             guiderShareWindow = null;
         });
         guiderShareWindow.on('move', () => {
-            socket.emit('move', {id: id, pos: guiderShareWindow.getPosition(), parentScreenSize: screenSize]});
+            socket.emit('move', {id: id, pos: guiderShareWindow.getPosition(), parentScreenSize: screenSize});
         });
         guiderShareWindow.on('resize', () => {
             socket.emit('resize', {id: id, size: guiderShareWindow.getSize()});

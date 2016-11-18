@@ -82,7 +82,7 @@ module.exports = class Connector {
             /* guider,traineeに応じたShareWindowを作る */
             socket.on('createShareWindow', (data) => {
                 console.log(data);
-                if(this.role.role == 'guider'){ this.ShareWindow.createGuiderShareWindow(data.id, data.opt, socket); }
+                if(this.role.role == 'guider'){ this.ShareWindow.createGuiderShareWindow(data.id, data.opt, data.screenSize, socket); }
                 if(this.role.role == 'trainee'){ this.ShareWindow.createTraineeShareWindow(data.id, data.opt); }
             });
             /* guiderがウィンドウを閉じるとtraineeも閉じる */
