@@ -114,7 +114,6 @@ module.exports = class Connector {
             /* guiderがウィンドウをリサイズするとtraineeもリサイズ */
             socket.on('resize', (data) => {
                 if(this.role.role == 'trainee'){
-                    let {width, height} = require('electron').electron.screen.getPrimaryDisplay().workAreaSize;
                     this.ShareWindow.ShareWindows[data.id].setSize(data.size[0], data.size[1], true);
                 }
             });

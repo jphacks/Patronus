@@ -18,7 +18,7 @@ const ShareWindow = function(){
             height: 600,
             minWidth:100,
             minHeight: 50,
-            // alwaysOnTop: true,
+            alwaysOnTop: true,
             darkTheme: true
         });
         guiderShareWindow.loadURL(opt.url);
