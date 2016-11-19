@@ -26,6 +26,7 @@ const ShareWindow = function(){
         guiderShareWindow.on('closed', () => {
             socket.emit('closeShareWindow', {id: id});
             guiderShareWindow = null;
+            ShareWindows[id] = null;
         });
         guiderShareWindow.on('move', () => {
             socket.emit('move', {id: id, pos: guiderShareWindow.getPosition(), screenSize: screenSize});
@@ -60,6 +61,7 @@ const ShareWindow = function(){
         traineeShareWindow.loadURL(opt.url);
         traineeShareWindow.on('closed', () => {
             traineeShareWindow = null;
+            ShareWindows[id] = null;
         });
         ShareWindows[id] = traineeShareWindow;
     }
