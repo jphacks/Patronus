@@ -92,6 +92,7 @@ module.exports = class Connector {
             socket.on('closeShareWindow', (data) => {
                 if(this.ShareWindow.ShareWindows[data.id] != null){
                     this.ShareWindow.ShareWindows[data.id].close();
+                    this.ShareWindow.ShareWindows[data.id] = null;
                 }
             });
             /* guiderがウィンドウを動かすとtraineeも動く */
